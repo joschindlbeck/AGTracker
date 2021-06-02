@@ -240,8 +240,8 @@ class MainActivity : AppCompatActivity() {
         val addedPlace = dbHandler.addPlace(trackedPlaceModel)
         if (addedPlace > 0) {
             //Toast.makeText(this, "Erfolgreich gespeichert", Toast.LENGTH_LONG).show()
-                vibrate()
-                // reload from db
+            vibrate()
+            // reload from db
             getPlacesFromLocalDB()
         }
 
@@ -270,21 +270,21 @@ class MainActivity : AppCompatActivity() {
 
     fun onSaveButtonClicked(view: View) {
         var kmlUtil: KMLUtil = KMLUtil()
-        var myExternalFile: File = File(getExternalFilesDir("AGTracker"),"TrackedPlace.kml")
+        var myExternalFile: File = File(getExternalFilesDir("AGTracker"), "TrackedPlace.kml")
         var kml = kmlUtil.createKML(this)
         var ok = kmlUtil.writeKMLToFile(myExternalFile, kml)
-        if(ok){
+        if (ok) {
             Toast.makeText(
                 this,
                 "Speichern erfolgreich",
                 Toast.LENGTH_LONG
             ).show()
+        } else {
+            Toast.makeText(
+                this,
+                "Fehler beim speichern",
+                Toast.LENGTH_LONG
+            ).show()
         }
-    else{
-        Toast.makeText(
-            this,
-            "Fehler beim speichern",
-            Toast.LENGTH_LONG
-        ).show()
     }
-}}
+}
