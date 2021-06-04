@@ -40,6 +40,7 @@ import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
+    private var dbHandler: SpatialiteHandler? = null
     private val requestingLocationUpdates: Boolean = true
     private lateinit var mFusedLocationClient: FusedLocationProviderClient
     private lateinit var locationCallback: LocationCallback
@@ -111,6 +112,9 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+        // DB
+        dbHandler = SpatialiteHandler()
+        dbHandler?.init(this)
 
         //Load data from DB
         getPlacesFromLocalDB()
@@ -132,11 +136,13 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         if (requestingLocationUpdates) startLocationUpdates()
+        //open db?
     }
 
     override fun onPause() {
         super.onPause()
         stopLocationUpdates()
+        //close db?
     }
 
     private fun stopLocationUpdates() {
@@ -172,9 +178,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun getPlacesFromLocalDB() {
         //val dbHandler = DatabaseHandler(this)
-        val dbHandler = SpatialiteHandler()
-        dbHandler.init(this)
-        val placeList = dbHandler.getPlaceList()
+        //val dbHandler = SpatialiteHandler()
+        //dbHandler.init(this)
+        val placeList = dbHandler!!.getPlaceList()
         if (placeList.size > 0) {
             rvPlaces.visibility = View.VISIBLE
             tv_no_places_found.visibility = View.GONE
@@ -248,9 +254,9 @@ class MainActivity : AppCompatActivity() {
             // reload from db
             getPlacesFromLocalDB()
         }*/
-        val dbHandler = SpatialiteHandler()
-        dbHandler.init(this)
-        if (dbHandler.addTrackedPlace(trackedPlaceModel)) {
+        //val dbHandler = SpatialiteHandler()
+        //dbHandler.init(this)
+        if (dbHandler!!.addTrackedPlace(trackedPlaceModel)) {
             //Toast.makeText(this, "Erfolgreich gespeichert", Toast.LENGTH_LONG).show()
             vibrate()
             // reload from db

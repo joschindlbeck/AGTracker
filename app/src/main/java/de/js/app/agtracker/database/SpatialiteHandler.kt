@@ -88,7 +88,7 @@ class SpatialiteHandler {
         val stmt = mDB.prepare(INSERT)
         val success = stmt.step()
         stmt.close()
-        return success
+        return true
     }
 
     fun getPlaceList(): ArrayList<TrackedPlaceModel> {
@@ -108,6 +108,7 @@ class SpatialiteHandler {
                 )
                 list.add(place)
             }
+            stmt.reset()
             stmt.close()
         } catch (e: SQLiteException) {
             return ArrayList()
