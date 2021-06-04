@@ -27,7 +27,7 @@ import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import de.js.app.agtracker.R
 import de.js.app.agtracker.adapter.PlacesAdapter
-import de.js.app.agtracker.database.DatabaseHandler
+import de.js.app.agtracker.database.SpatialiteHandler
 import de.js.app.agtracker.models.TrackedPlaceModel
 import de.js.app.agtracker.util.KMLUtil
 import de.js.app.agtracker.util.SwipeToDeleteCallback
@@ -171,7 +171,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getPlacesFromLocalDB() {
-        val dbHandler = DatabaseHandler(this)
+        //val dbHandler = DatabaseHandler(this)
+        val dbHandler = SpatialiteHandler()
+        dbHandler.init(this)
         val placeList = dbHandler.getPlaceList()
         if (placeList.size > 0) {
             rvPlaces.visibility = View.VISIBLE
@@ -236,6 +238,8 @@ class MainActivity : AppCompatActivity() {
             sdf.format(Calendar.getInstance().time).toString()
         )
 
+
+        /*
         val dbHandler = DatabaseHandler(this)
         val addedPlace = dbHandler.addPlace(trackedPlaceModel)
         if (addedPlace > 0) {
@@ -243,7 +247,16 @@ class MainActivity : AppCompatActivity() {
             vibrate()
             // reload from db
             getPlacesFromLocalDB()
+        }*/
+        val dbHandler = SpatialiteHandler()
+        dbHandler.init(this)
+        if (dbHandler.addTrackedPlace(trackedPlaceModel)) {
+            //Toast.makeText(this, "Erfolgreich gespeichert", Toast.LENGTH_LONG).show()
+            vibrate()
+            // reload from db
+            getPlacesFromLocalDB()
         }
+
 
     }
 
