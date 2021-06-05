@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/nav_home">
+
+    <fragment
+        android:id="@+id/nav_home"
+        android:name="de.js.app.agtracker.ui.home.HomeFragment"
+        android:label="@string/menu_home"
+        tools:layout="@layout/fragment_home" />
+
+    <fragment
+        android:id="@+id/nav_track_point"
+        android:name="de.js.app.agtracker.ui.TrackPointFragment"
+        android:label="@string/menu_track_point"
+        tools:layout="@layout/fragment_track_point"/>
+
+    <fragment android:id="@+id/nav_track_area"
+        android:name="de.js.app.agtracker.ui.TrackAreaFragement"
+        android:label="Track Area"
+        tools:layout="@layout/fragment_track_area"/>
+
+    <fragment android:id="@+id/nav_navigation"
+        android:label="Navigation"
+        android:name="de.js.app.agtracker.ui.NavigationFragment"
+        tools:layout="@layout/fragment_navigation"/>
+</navigation>

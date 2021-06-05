@@ -2,4 +2,21 @@
     <string name="app_name">AGTracker</string>
     <string name="note_text_no_places_found">Keine Daten gefunden</string>
     <string name="google_maps_api_key">AIzaSyA5_kCgDCmLiEty0-JT1TleLlU8qZ_e8XA</string>
+    <string name="title_activity_main_nav">MainActivityNav</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <!-- Menu Texts -->
+    <string name="menu_home">Home</string>
+    <string name="menu_gallery">Gallery</string>
+    <string name="menu_slideshow">Slideshow</string>
+    <string name="menu_track_point">Track Point</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="menu_track_area">Track Area</string>
+    <string name="menu_navigate">Navigate</string>
 </resources>
