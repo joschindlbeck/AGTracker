@@ -8,24 +8,22 @@ import android.content.Intent
 import android.location.Location
 import android.location.LocationManager
 import android.net.Uri
-import android.os.Bundle
-import android.os.Looper
-import android.os.Vibrator
+import android.os.*
 import android.provider.Settings
 import android.util.Log
 import android.view.Menu
 import android.view.WindowManager
 import android.widget.Toast
-import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.navigation.NavigationView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import androidx.drawerlayout.widget.DrawerLayout
-import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.location.*
+import com.google.android.material.navigation.NavigationView
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
@@ -33,9 +31,14 @@ import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import de.js.app.agtracker.database.SpatialiteHandler
 import de.js.app.agtracker.databinding.ActivityMainNavBinding
+import de.js.app.agtracker.util.KalmanLatLong
 import kotlinx.android.synthetic.main.activity_main.*
 
+
 class MainActivityNav : AppCompatActivity() {
+    private var currentSpeed: Float = 0.0f
+    private var runStartTimeInMillis: Long = 0
+    private var kalmanFilter: KalmanLatLong = KalmanLatLong(0.5f)
     public lateinit var mVibrator: Vibrator
     public var dbHandler: SpatialiteHandler? = null
     public lateinit var mLocation: Location
@@ -81,7 +84,11 @@ class MainActivityNav : AppCompatActivity() {
         // menu should be considered as top level destinations.
         appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.nav_home, R.id.nav_track_point, R.id.nav_track_area, R.id.nav_navigation, R.id.nav_list_tracked_places
+                R.id.nav_home,
+                R.id.nav_track_point,
+                R.id.nav_track_area,
+                R.id.nav_navigation,
+                R.id.nav_list_tracked_places
             ), drawerLayout
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
@@ -157,14 +164,17 @@ class MainActivityNav : AppCompatActivity() {
             override fun onLocationResult(locationResult: LocationResult?) {
                 locationResult ?: return
                 for (location in locationResult.locations) {
-                    // save location data
-                    mLatitude = location.latitude
-                    mLongitude = location.longitude
-                    mLocation = location
+                    if (checkIfValidLocation(location)) {
 
-                    //inform listenres
-                    for (l in mLocationUpdateListeners) {
-                        l.onLocationUpdate(location)
+                        // save location data
+                        mLatitude = location.latitude
+                        mLongitude = location.longitude
+                        mLocation = location
+
+                        //inform listenres
+                        for (l in mLocationUpdateListeners) {
+                            l.onLocationUpdate(location)
+                        }
                     }
                 }
             }
@@ -182,6 +192,97 @@ class MainActivityNav : AppCompatActivity() {
             locationCallback,
             Looper.getMainLooper()
         )
+        runStartTimeInMillis = SystemClock.elapsedRealtimeNanos() / 1000000
+    }
+
+    private fun checkIfValidLocation(location: Location): Boolean {
+        val age: Long = getLocationAge(location)
+
+        if (age > 10 * 1000) { //more than 10 seconds
+            Log.d(this.javaClass.simpleName, "Location is old")
+            //oldLocationList.add(location)
+            return false
+        }
+
+        if (location.accuracy <= 0) {
+            Log.d(this.javaClass.simpleName, "Latitidue and longitude values are invalid.")
+            //noAccuracyLocationList.add(location)
+            return false
+        }
+
+
+        val horizontalAccuracy = location.accuracy
+        if (horizontalAccuracy > 1) { //TODO: What accuracy shall be taken? make it customizable!
+            Log.d(this.javaClass.simpleName, "Accuracy is too low.")
+            //inaccurateLocationList.add(location)
+            return false
+        }
+
+
+        /* Kalman Filter */
+
+
+        /* Kalman Filter */
+        val Qvalue: Float
+
+        val elapsedTimeInMillis: Long =
+            (location.elapsedRealtimeNanos / 1000000) - runStartTimeInMillis
+
+
+        if (currentSpeed === 0.0f) {
+            Qvalue = 0.5f //3.0f //3 meters per second
+        } else {
+            Qvalue = currentSpeed // meters per second
+        }
+
+        kalmanFilter.Process(
+            location.latitude,
+            location.longitude,
+            location.accuracy,
+            elapsedTimeInMillis,
+            Qvalue
+        )
+        val predictedLat: Double = kalmanFilter.get_lat()
+        val predictedLng: Double = kalmanFilter.get_lng()
+
+        val predictedLocation = Location("") //provider name is unecessary
+
+        predictedLocation.latitude = predictedLat //your coords of course
+
+        predictedLocation.longitude = predictedLng
+        val predictedDeltaInMeters = predictedLocation.distanceTo(location)
+
+        if (predictedDeltaInMeters > 60) {
+            Log.d(
+                this.javaClass.simpleName,
+                "Kalman Filter detects mal GPS, we should probably remove this from track"
+            )
+            kalmanFilter.consecutiveRejectCount += 1
+            if (kalmanFilter.consecutiveRejectCount > 3) {
+                kalmanFilter =
+                    KalmanLatLong(3f) //reset Kalman Filter if it rejects more than 3 times in raw.
+            }
+            //kalmanNGLocationList.add(location)
+            return false
+        } else {
+            kalmanFilter.consecutiveRejectCount = 0
+        }
+
+        Log.d(this.javaClass.simpleName, "Location quality is good enough.")
+        currentSpeed = location.speed
+
+        return true
+    }
+
+    private fun getLocationAge(newLocation: Location): Long {
+        val locationAge: Long
+        if (Build.VERSION.SDK_INT >= 17) {
+            locationAge =
+                (SystemClock.elapsedRealtimeNanos() / 1000000) - (newLocation.getElapsedRealtimeNanos() / 1000000)
+        } else {
+            locationAge = System.currentTimeMillis() - newLocation.getTime()
+        }
+        return locationAge
     }
 
     private fun stopLocationUpdates() {

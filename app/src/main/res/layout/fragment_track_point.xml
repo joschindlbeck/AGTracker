@@ -25,7 +25,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:textSize="10dp"
-                android:text="42.23342342"/>
+                android:text="00.0"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
@@ -37,7 +37,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:textSize="10dp"
-                android:text="42.23342342"/>
+                android:text="00.0"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
@@ -49,7 +49,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:textSize="10dp"
-                android:text="1"/>
+                android:text="999.9"/>
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
