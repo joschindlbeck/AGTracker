@@ -54,8 +54,8 @@ open class PlacesAdapter(
             holder.itemView.tvName.text = model.name
             holder.itemView.tvDate.text = model.date
             //holder.itemView.tvDate.text = DateTimeFormatter.ISO_INSTANT.format(DateTime(model.date))
-            holder.itemView.tvLat.text= model.latitude.toString()
-            holder.itemView.tvLong.text =model.longitude.toString()
+            holder.itemView.tvLat.text= String.format("%.6f", model.latitude)
+            holder.itemView.tvLong.text =String.format("%.6f", model.longitude)
 
             //set onClickListener for button
             holder.itemView.btnViewOnMap.setOnClickListener {

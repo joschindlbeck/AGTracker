@@ -5,7 +5,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import androidx.core.os.bundleOf
+import androidx.navigation.fragment.findNavController
 import de.js.app.agtracker.R
+import de.js.app.agtracker.databinding.FragmentTrackAreaBinding
+import de.js.app.agtracker.databinding.FragmentTrackPointBinding
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -22,6 +27,12 @@ class TrackAreaFragement : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
 
+    //View binding
+    private var _binding: FragmentTrackAreaBinding? = null
+    // This property is only valid between onCreateView and
+    // onDestroyView.
+    private val binding get() = _binding!!
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -34,8 +45,31 @@ class TrackAreaFragement : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_track_area, container, false)
+        _binding = FragmentTrackAreaBinding.inflate(inflater, container, false)
+        val root: View = binding.root
+
+
+        binding.btnTrack1.setOnClickListener {onTrackButtonClicked(it)}
+        binding.btnTrack2.setOnClickListener {onTrackButtonClicked(it)}
+        binding.btnTrack3.setOnClickListener {onTrackButtonClicked(it)}
+        binding.btnTrack4.setOnClickListener {onTrackButtonClicked(it)}
+        binding.btnTrack5.setOnClickListener {onTrackButtonClicked(it)}
+        binding.btnTrack6.setOnClickListener {onTrackButtonClicked(it)}
+        binding.btnTrack7.setOnClickListener {onTrackButtonClicked(it)}
+        binding.btnTrack8.setOnClickListener {onTrackButtonClicked(it)}
+        binding.btnTrack9.setOnClickListener {onTrackButtonClicked(it)}
+
+        return root
+
+    }
+
+    private fun onTrackButtonClicked(view: View?) {
+        var text = ""
+        if (view is Button) {
+            text = view.text as String
+        }
+    findNavController().navigate(R.id.action_nav_track_area_to_trackAreaRunningFragment,
+                                bundleOf(Pair(TrackAreaRunningFragment.ARG_TRACKING_ID,text)))
     }
 
     companion object {

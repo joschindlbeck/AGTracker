@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.TrackAreaRunningFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:textSize="10dp"
+                    android:text="Lat:"/>
+                <TextView
+                    android:id="@+id/tvCurLat"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:textSize="10dp"
+                    android:text="42.23342342"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:textSize="10dp"
+                    android:text="Long:"
+                    android:layout_marginLeft="20dp"/>
+                <TextView
+                    android:id="@+id/tvCurLong"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:textSize="10dp"
+                    android:text="42.23342342"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:textSize="10dp"
+                    android:text="Accuracy:"
+                    android:layout_marginLeft="20dp"/>
+                <TextView
+                    android:id="@+id/tvCurAccuracy"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:textSize="10dp"
+                    android:text="1"/>
+            </LinearLayout>
+            <TextView
+                android:id="@+id/tv_track_area_running_for_id"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="32dp"
+                android:text="@string/hello_blank_fragment" />
+            <Button
+                android:id="@+id/btn_tracking_stop"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Stop"
+                android:textSize="32dp"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <CheckBox
+                    android:id="@+id/cb_draw_polygon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Draw polygon"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/map"
+            class="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="3" />
+    </LinearLayout>
+</FrameLayout>

@@ -20,10 +20,22 @@
     <fragment android:id="@+id/nav_track_area"
         android:name="de.js.app.agtracker.ui.TrackAreaFragement"
         android:label="Track Area"
-        tools:layout="@layout/fragment_track_area"/>
+        tools:layout="@layout/fragment_track_area">
+        <action
+            android:id="@+id/action_nav_track_area_to_trackAreaRunningFragment"
+            app:destination="@id/trackAreaRunningFragment" />
+    </fragment>
 
     <fragment android:id="@+id/nav_navigation"
         android:label="Navigation"
         android:name="de.js.app.agtracker.ui.NavigationFragment"
         tools:layout="@layout/fragment_navigation"/>
+    <fragment android:id="@+id/nav_list_tracked_places"
+        android:name="de.js.app.agtracker.ui.ListTrackedPlacesFragment"
+        tools:layout="@layout/fragment_list_tracked_places"/>
+    <fragment
+        android:id="@+id/trackAreaRunningFragment"
+        android:name="de.js.app.agtracker.ui.TrackAreaRunningFragment"
+        android:label="Running tracking"
+        tools:layout="@layout/fragment_track_area_running" />
 </navigation>
