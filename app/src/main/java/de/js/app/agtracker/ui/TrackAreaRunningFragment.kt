@@ -213,7 +213,7 @@ class TrackAreaRunningFragment : Fragment(), MainActivityNav.LocationUpdateListe
             Log.e(TrackAreaRunningFragment.javaClass.simpleName, "Error getting google maps")
             return
         }
-        googleMap.mapType = GoogleMap.MAP_TYPE_SATELLITE
+        //googleMap.mapType = GoogleMap.MAP_TYPE_SATELLITE
 
         googleMap.isMyLocationEnabled = true
         googleMap.uiSettings.isMyLocationButtonEnabled = true
