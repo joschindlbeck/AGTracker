@@ -8,16 +8,21 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CheckBox
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.*
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
+import com.google.android.gms.maps.model.Polyline
+import com.google.android.gms.maps.model.PolylineOptions
 import de.js.app.agtracker.MainActivityNav
 import de.js.app.agtracker.R
 import de.js.app.agtracker.databinding.FragmentTrackAreaRunningBinding
+import de.js.app.agtracker.models.TrackedPlaceModel
+import de.js.app.agtracker.util.Util
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -30,13 +35,12 @@ private const val ARG_PARAM2 = "param2"
  */
 class TrackAreaRunningFragment : Fragment(), MainActivityNav.LocationUpdateListener,
     OnMapReadyCallback {
+    private var place_id: Long = 0
     private lateinit var mPolylineOptions: PolylineOptions
     private var mLine: Polyline? = null
-    private var makePolygon = false
-    private lateinit var mPolygonOptions: PolygonOptions
-    private var mPolygon: Polygon? = null
     private var mStartLocation: Location? = null
-    private var mLastLocation: Location? = null
+    private var mLastTrackedLocation: Location? = null
+    private var mCurrentLocation: Location? = null
     private var mTrackedLocations: ArrayList<Location> = ArrayList()
 
     // TODO: Rename and change types of parameters
@@ -70,7 +74,6 @@ class TrackAreaRunningFragment : Fragment(), MainActivityNav.LocationUpdateListe
 
         binding.tvTrackAreaRunningForId.text = tracking_id
         binding.btnTrackingStop.setOnClickListener { onStopTracking(it) }
-        binding.cbDrawPolygon.setOnClickListener{ onClickDrawPolygon(it) }
 
         //Map
         val supportMapFragment: SupportMapFragment =
@@ -82,23 +85,28 @@ class TrackAreaRunningFragment : Fragment(), MainActivityNav.LocationUpdateListe
         //return inflater.inflate(R.layout.fragment_track_area_running, container, false)
     }
 
-    private fun onClickDrawPolygon(view: View?) {
-        makePolygon = (view as CheckBox).isChecked
-
-    }
 
     private fun onStopTracking(view: View?) {
-
+        // just a convenience button, logic is in onPause()
+        findNavController().navigateUp() //navigate back
     }
 
     override fun onResume() {
         super.onResume()
+        //Log
+        Log.d(this.javaClass.simpleName, "onResume")
         // register to Location updates
         (activity as MainActivityNav).registerForLocationUpdates(this)
     }
 
     override fun onPause() {
         super.onPause()
+        //Log
+        Log.d(this.javaClass.simpleName, "onPause")
+
+        //if we are recording an area/multiple point, set lat/long to the centroid
+
+
         // deregister from Location updates
         (activity as MainActivityNav).unregisterForLocationUpdates(this)
     }
@@ -130,81 +138,88 @@ class TrackAreaRunningFragment : Fragment(), MainActivityNav.LocationUpdateListe
         _binding?.tvCurLat?.text = String.format("%.10f", location.latitude)
         _binding?.tvCurLong?.text = String.format("%.10f", location.longitude)
         _binding?.tvCurAccuracy?.text = String.format("%.3f", location.accuracy)
+        mCurrentLocation = location
 
         //set new point
         setNewPointForArea(location)
     }
 
     private fun setNewPointForArea(location: Location) {
-        if (mLastLocation == null) {
+        if (mLastTrackedLocation == null) {
             // first time call, set last location
-            mLastLocation = location
+            mLastTrackedLocation = location
             mStartLocation = location
         }
 
         var results: FloatArray = FloatArray(3)
         Location.distanceBetween(
-            mLastLocation!!.latitude,
-            mLastLocation!!.longitude,
+            mLastTrackedLocation!!.latitude,
+            mLastTrackedLocation!!.longitude,
             location.latitude,
             location.longitude,
             results
         )
-        if (results[0] > 0.5) {
+
+        Log.d(this.javaClass.simpleName, "Distance between:" + results[0].toString())
+
+        if (results[0] > 0.25) {
             // set point if distance is exceeded TODO: make customizable
             mTrackedLocations.add(location)
-            if(makePolygon){
-                //Polygon
-                if (mPolygon == null) {
-                    //first time
-                    mPolygonOptions = PolygonOptions()
-                    mPolygonOptions.add(
-                        LatLng(
-                            mStartLocation!!.latitude,
-                            mStartLocation!!.longitude
-                        )
+            if (mLine == null) {
+                //first time
+                mPolylineOptions = PolylineOptions()
+                mPolylineOptions.add(
+                    LatLng(
+                        mStartLocation!!.latitude,
+                        mStartLocation!!.longitude
                     )
-                    mPolygonOptions.strokeColor(Color.argb(255,255,0,0))
-                    mPolygonOptions.strokeJointType(JointType.ROUND)
-                    mPolygonOptions.fillColor(Color.argb(128,255,0,0))
-                }
+                )
+                mPolylineOptions.color(Color.argb(255, 255, 0, 0))
 
-                mPolygonOptions.add(LatLng(location.latitude, location.longitude))
-                mPolygon?.remove()
-                mPolygon = mGoogleMap.addPolygon(mPolygonOptions)
+                createTrackedPlace(location)
 
-                //focus on line
-                val bounds = LatLngBounds.builder()
-                for (point in mPolygon!!.points) {
-                    bounds.include(point)
-                }
-                mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds.build(), 50))
-            }else {
-                //Polyline
-                if (mLine == null) {
-                    //first time
-                    mPolylineOptions = PolylineOptions()
-                    mPolylineOptions.add(
-                        LatLng(
-                            mStartLocation!!.latitude,
-                            mStartLocation!!.longitude
-                        )
-                    )
-                    mPolylineOptions.color(Color.argb(255,255,0,0))
-                }
-
-                mPolylineOptions.add(LatLng(location.latitude, location.longitude))
-                mLine?.remove()
-                mLine = mGoogleMap.addPolyline(mPolylineOptions)
-
-                //focus on line
-                val bounds = LatLngBounds.builder()
-                for (point in mLine!!.points) {
-                    bounds.include(point)
-                }
-                mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds.build(), 50))
             }
+
+            mPolylineOptions.add(LatLng(location.latitude, location.longitude))
+            mLine?.remove()
+            mLine = mGoogleMap.addPolyline(mPolylineOptions)
+
+
+            if (mLine!!.points.size > 1) {
+                // add additional points also on db
+                addPointsToTrackedPlace(mLine!!.points)
+            }
+
+            //focus on line
+            val bounds = LatLngBounds.builder()
+            for (point in mLine!!.points) {
+                bounds.include(point)
+            }
+            mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds.build(), 50))
+
+            mLastTrackedLocation = location //update last location where we set a point
         }
+    }
+
+    private fun addPointsToTrackedPlace(points: List<LatLng>) {
+        val mainActivity = activity as MainActivityNav
+        mainActivity.dbHandler?.addPointsToTrackedPlace(place_id, points)
+    }
+
+    private fun createTrackedPlace(location: Location) {
+        // save to DB, create record
+        val mainActivity = activity as MainActivityNav
+        val trackedPlaceModel = TrackedPlaceModel(
+            0,
+            tracking_id ?: "",
+            location.latitude,
+            location.longitude,
+            Util.getNowISO8601(),
+            1,
+            Util.getDeviceID(requireContext()),
+            ""
+        )
+        place_id = mainActivity.dbHandler?.addTrackedPlace(trackedPlaceModel) ?: 0
     }
 
     @SuppressLint("MissingPermission")
@@ -220,8 +235,13 @@ class TrackAreaRunningFragment : Fragment(), MainActivityNav.LocationUpdateListe
         googleMap.uiSettings.isCompassEnabled = true
         googleMap.uiSettings.setAllGesturesEnabled(true)
 
+        val position = LatLng(mCurrentLocation?.latitude ?: 0.0, mCurrentLocation?.longitude ?: 0.0)
+        val newLatLngZoom = CameraUpdateFactory.newLatLngZoom(position, 18f)
+        googleMap.animateCamera(newLatLngZoom)
+
         mGoogleMap = googleMap
 
 
     }
+
 }

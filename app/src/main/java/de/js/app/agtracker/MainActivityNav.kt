@@ -16,7 +16,6 @@ import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
@@ -32,7 +31,6 @@ import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import de.js.app.agtracker.database.SpatialiteHandler
 import de.js.app.agtracker.databinding.ActivityMainNavBinding
 import de.js.app.agtracker.util.KalmanLatLong
-import kotlinx.android.synthetic.main.activity_main.*
 
 
 class MainActivityNav : AppCompatActivity() {
@@ -88,7 +86,8 @@ class MainActivityNav : AppCompatActivity() {
                 R.id.nav_track_point,
                 R.id.nav_track_area,
                 R.id.nav_navigation,
-                R.id.nav_list_tracked_places
+                R.id.nav_list_tracked_places,
+                R.id.nav_export
             ), drawerLayout
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
@@ -340,5 +339,10 @@ class MainActivityNav : AppCompatActivity() {
 
     public interface LocationUpdateListener {
         fun onLocationUpdate(location: Location)
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+
     }
 }

@@ -6,21 +6,27 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_home"
-            android:icon="@drawable/ic_menu_camera"
+            android:icon="@drawable/ic_baseline_home_24"
             android:title="@string/menu_home" />
         <item
             android:id="@+id/nav_track_point"
             android:icon="@drawable/ic_baseline_add_location_alt_24"
-            android:title="@string/menu_track_point"/>
-        <item android:id="@+id/nav_track_area"
+            android:title="@string/menu_track_point" />
+        <item
+            android:id="@+id/nav_track_area"
             android:icon="@drawable/ic_baseline_add_road_24"
-            android:title="@string/menu_track_area"/>
-        <item android:id="@+id/nav_list_tracked_places"
+            android:title="@string/menu_track_area" />
+        <item
+            android:id="@+id/nav_list_tracked_places"
             android:icon="@drawable/ic_baseline_list_24"
-            android:title="@string/menu_list_tracked_places"/>
-        <item android:id="@+id/nav_navigation"
+            android:title="@string/menu_list_tracked_places" />
+        <item
+            android:id="@+id/nav_navigation"
             android:icon="@drawable/ic_baseline_navigation_24"
             android:title="@string/menu_navigate" />
-
+        <item
+            android:id="@+id/nav_export"
+            android:icon="@drawable/ic_baseline_save_24"
+            android:title="@string/menu_export" />
     </group>
 </menu>

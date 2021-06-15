@@ -29,13 +29,20 @@
     <fragment android:id="@+id/nav_navigation"
         android:label="Navigation"
         android:name="de.js.app.agtracker.ui.NavigationFragment"
-        tools:layout="@layout/fragment_navigation"/>
-    <fragment android:id="@+id/nav_list_tracked_places"
+        tools:layout="@layout/fragment_navigation" />
+    <fragment
+        android:id="@+id/nav_list_tracked_places"
         android:name="de.js.app.agtracker.ui.ListTrackedPlacesFragment"
-        tools:layout="@layout/fragment_list_tracked_places"/>
+        tools:layout="@layout/fragment_list_tracked_places"
+        android:label="@string/menu_list_tracked_places" />
     <fragment
         android:id="@+id/trackAreaRunningFragment"
         android:name="de.js.app.agtracker.ui.TrackAreaRunningFragment"
         android:label="Running tracking"
         tools:layout="@layout/fragment_track_area_running" />
+    <fragment
+        android:id="@+id/nav_export"
+        android:name="de.js.app.agtracker.ui.ExportFrament"
+        android:label="Export"
+        tools:layout="@layout/fragment_export_frament" />
 </navigation>

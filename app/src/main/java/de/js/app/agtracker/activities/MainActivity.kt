@@ -241,7 +241,10 @@ class MainActivity : AppCompatActivity() {
             text,
             mLatitude,
             mLongitude,
-            sdf.format(Calendar.getInstance().time).toString()
+            sdf.format(Calendar.getInstance().time).toString(),
+            1,
+            "Test",
+            ""
         )
 
 
@@ -256,7 +259,7 @@ class MainActivity : AppCompatActivity() {
         }*/
         //val dbHandler = SpatialiteHandler()
         //dbHandler.init(this)
-        if (dbHandler!!.addTrackedPlace(trackedPlaceModel)) {
+        if (dbHandler!!.addTrackedPlace(trackedPlaceModel) > 0) {
             //Toast.makeText(this, "Erfolgreich gespeichert", Toast.LENGTH_LONG).show()
             vibrate()
             // reload from db
@@ -290,20 +293,22 @@ class MainActivity : AppCompatActivity() {
     fun onSaveButtonClicked(view: View) {
         var kmlUtil: KMLUtil = KMLUtil()
         var myExternalFile: File = File(getExternalFilesDir("AGTracker"), "TrackedPlace.kml")
-        var kml = kmlUtil.createKML(this)
+        /**
+        var kml = kmlUtil.createKML(this.dbHandler!!)
         var ok = kmlUtil.writeKMLToFile(myExternalFile, kml)
         if (ok) {
-            Toast.makeText(
-                this,
-                "Speichern erfolgreich",
-                Toast.LENGTH_LONG
-            ).show()
+        Toast.makeText(
+        this,
+        "Speichern erfolgreich",
+        Toast.LENGTH_LONG
+        ).show()
         } else {
-            Toast.makeText(
-                this,
+        Toast.makeText(
+        this,
                 "Fehler beim speichern",
                 Toast.LENGTH_LONG
             ).show()
         }
+         */
     }
 }

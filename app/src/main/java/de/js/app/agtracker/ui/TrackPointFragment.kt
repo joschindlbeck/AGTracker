@@ -4,21 +4,18 @@ import android.location.Location
 import android.os.Build
 import android.os.Bundle
 import android.os.VibrationEffect
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.TextView
 import android.widget.Toast
+import androidx.fragment.app.Fragment
+import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.SphericalUtil
 import de.js.app.agtracker.MainActivityNav
-import de.js.app.agtracker.R
-import de.js.app.agtracker.databinding.FragmentHomeBinding
 import de.js.app.agtracker.databinding.FragmentTrackPointBinding
 import de.js.app.agtracker.models.TrackedPlaceModel
-import kotlinx.android.synthetic.main.fragment_track_point.*
-import java.text.SimpleDateFormat
-import java.util.*
+import de.js.app.agtracker.util.Util
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -31,12 +28,15 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class TrackPointFragment : Fragment(), MainActivityNav.LocationUpdateListener {
+    private var mCurLocation: Location? = null
+
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
 
     //View binding
     private var _binding: FragmentTrackPointBinding? = null
+
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
@@ -61,15 +61,15 @@ class TrackPointFragment : Fragment(), MainActivityNav.LocationUpdateListener {
         val root: View = binding.root
 
 
-        binding.btnTrack1.setOnClickListener {onTrackButtonClicked(it)}
-        binding.btnTrack2.setOnClickListener {onTrackButtonClicked(it)}
-        binding.btnTrack3.setOnClickListener {onTrackButtonClicked(it)}
-        binding.btnTrack4.setOnClickListener {onTrackButtonClicked(it)}
-        binding.btnTrack5.setOnClickListener {onTrackButtonClicked(it)}
-        binding.btnTrack6.setOnClickListener {onTrackButtonClicked(it)}
-        binding.btnTrack7.setOnClickListener {onTrackButtonClicked(it)}
-        binding.btnTrack8.setOnClickListener {onTrackButtonClicked(it)}
-        binding.btnTrack9.setOnClickListener {onTrackButtonClicked(it)}
+        binding.btnTrack1.setOnClickListener { onTrackButtonClicked(it) }
+        binding.btnTrack2.setOnClickListener { onTrackButtonClicked(it) }
+        binding.btnTrack3.setOnClickListener { onTrackButtonClicked(it) }
+        binding.btnTrack4.setOnClickListener { onTrackButtonClicked(it) }
+        binding.btnTrack5.setOnClickListener { onTrackButtonClicked(it) }
+        binding.btnTrack6.setOnClickListener { onTrackButtonClicked(it) }
+        binding.btnTrack7.setOnClickListener { onTrackButtonClicked(it) }
+        binding.btnTrack8.setOnClickListener { onTrackButtonClicked(it) }
+        binding.btnTrack9.setOnClickListener { onTrackButtonClicked(it) }
 
         return root
 
@@ -83,21 +83,24 @@ class TrackPointFragment : Fragment(), MainActivityNav.LocationUpdateListener {
             text = view.text as String
         }
 
-        val myFormat = "dd.MM.yyyy HH:mm:ss"
-        val sdf = SimpleDateFormat(myFormat, Locale.getDefault())
+        // Calculate Area/Ring around tracked place
+        val ewkt = mCurLocation?.let { createCircleAroundLocation(it) }
 
         // save to DB
         val mainActivity = activity as MainActivityNav
         val trackedPlaceModel = TrackedPlaceModel(
             0,
             text,
-            mainActivity.mLatitude,
-            mainActivity.mLongitude,
-            sdf.format(Calendar.getInstance().time).toString()
+            mCurLocation?.latitude ?: 0.0,
+            mCurLocation?.longitude ?: 0.0,
+            Util.getNowISO8601(),
+            1,
+            Util.getDeviceID(requireContext()),
+            ewkt ?: ""
         )
 
 
-        if (mainActivity.dbHandler?.addTrackedPlace(trackedPlaceModel) ?: false) {
+        if (mainActivity.dbHandler?.addTrackedPlace(trackedPlaceModel) ?: 0 > 0) {
             //vibrate if succesffuly
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 mainActivity.mVibrator.vibrate(
@@ -127,6 +130,30 @@ class TrackPointFragment : Fragment(), MainActivityNav.LocationUpdateListener {
 
     }
 
+    private fun createCircleAroundLocation(location: Location): String {
+        val origin: LatLng = LatLng(location.latitude, location.longitude)
+        var heading: Double = 0.0
+        var points: ArrayList<LatLng> = ArrayList(8)
+        for (heading in 0..359 step 45) {
+            //TODO: Check distance, amount of points
+            points.add(SphericalUtil.computeOffset(origin, 0.5, heading.toDouble()))
+        }
+
+        //Transform to ewkt
+        //'SRID=4326; MULTIPOINT(long lat, long lat, ...)'
+        var stringBuffer = StringBuffer("SRID=4326; MULTIPOINT(")
+        for ((i, p) in points.withIndex()) {
+            stringBuffer.append(p.longitude).append(" ").append(p.latitude)
+            if (i == points.size - 1) {
+                //last one
+                stringBuffer.append(")")
+            } else {
+                stringBuffer.append(", ")
+            }
+        }
+        return stringBuffer.toString()
+    }
+
     companion object {
         /**
          * Use this factory method to create a new instance of
@@ -151,6 +178,8 @@ class TrackPointFragment : Fragment(), MainActivityNav.LocationUpdateListener {
         _binding?.tvCurLat?.text = String.format("%.10f", location.latitude)
         _binding?.tvCurLong?.text = String.format("%.10f", location.longitude)
         _binding?.tvCurAccuracy?.text = String.format("%.3f", location.accuracy)
+
+        mCurLocation = location
     }
 
     override fun onResume() {
