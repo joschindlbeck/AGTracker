@@ -133,15 +133,24 @@ class TrackAreaRunningFragment : Fragment(), MainActivityNav.LocationUpdateListe
             }
     }
 
-    override fun onLocationUpdate(location: Location) {
-        // update LatLong
+    override fun onLocationUpdate(location: Location, isGoodQuality: Boolean) {
+
+        // update LatLong in Display
         _binding?.tvCurLat?.text = String.format("%.10f", location.latitude)
         _binding?.tvCurLong?.text = String.format("%.10f", location.longitude)
         _binding?.tvCurAccuracy?.text = String.format("%.3f", location.accuracy)
-        mCurrentLocation = location
 
-        //set new point
-        setNewPointForArea(location)
+        if (isGoodQuality) {
+
+            mCurrentLocation = location
+            //set new point
+            setNewPointForArea(location)
+            binding.ivGpsQualityIcon.setColorFilter(Color.GREEN)
+
+        } else {
+            // do not use the location
+            binding.ivGpsQualityIcon.setColorFilter(Color.RED)
+        }
     }
 
     private fun setNewPointForArea(location: Location) {

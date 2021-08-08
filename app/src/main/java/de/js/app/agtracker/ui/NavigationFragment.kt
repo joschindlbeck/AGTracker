@@ -2,25 +2,19 @@ package de.js.app.agtracker.ui
 
 import android.hardware.GeomagneticField
 import android.location.Location
-import android.location.LocationManager
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.RotateAnimation
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.model.*
+import androidx.fragment.app.Fragment
+import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.SphericalUtil
-import com.google.maps.android.ktx.utils.sphericalPathLength
 import de.js.app.agtracker.MainActivityNav
-import de.js.app.agtracker.R
-import de.js.app.agtracker.databinding.FragmentListTrackedPlacesBinding
 import de.js.app.agtracker.databinding.FragmentNavigationBinding
 import de.js.app.agtracker.models.TrackedPlaceModel
 import de.js.app.agtracker.util.CompassUtil
-import kotlinx.android.synthetic.main.activity_map.*
 import java.util.*
 
 // TODO: Rename parameter arguments, choose names that match
@@ -116,17 +110,17 @@ class NavigationFragment : Fragment(), MainActivityNav.LocationUpdateListener {
             }
     }
 
-    override fun onLocationUpdate(location: Location) {
+    override fun onLocationUpdate(location: Location, isGoodQuality: Boolean) {
 
-        mCurrentLocation = LatLng(location.latitude,location.longitude)
+        mCurrentLocation = LatLng(location.latitude, location.longitude)
         mLocation = location
 
         // distance
-        val dist = SphericalUtil.computeDistanceBetween(mCurrentLocation,mTarget)
+        val dist = SphericalUtil.computeDistanceBetween(mCurrentLocation, mTarget)
 
         // UI
         binding.tvDistanceArrow.text = String.format("%.1f", dist) + "m"
-        binding.tvAccuracy.text = String.format("%.3f",location.accuracy) +"m"
+        binding.tvAccuracy.text = String.format("%.3f", location.accuracy) + "m"
 
         //directions
         mHeadingTargetNorth = SphericalUtil.computeHeading(mCurrentLocation, mTarget)

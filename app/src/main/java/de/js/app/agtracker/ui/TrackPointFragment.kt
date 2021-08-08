@@ -1,5 +1,6 @@
 package de.js.app.agtracker.ui
 
+import android.graphics.Color
 import android.location.Location
 import android.os.Build
 import android.os.Bundle
@@ -28,6 +29,7 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class TrackPointFragment : Fragment(), MainActivityNav.LocationUpdateListener {
+    private var mGoodQuality: Boolean = false
     private var mCurLocation: Location? = null
 
     // TODO: Rename and change types of parameters
@@ -78,6 +80,14 @@ class TrackPointFragment : Fragment(), MainActivityNav.LocationUpdateListener {
     }
 
     fun onTrackButtonClicked(view: View) {
+        // GPS quality good enough?
+        if (!mGoodQuality) {
+            Toast.makeText(requireContext(), "Bad GPS quality, no point added!", Toast.LENGTH_LONG)
+                .show()
+            return
+        }
+
+        // Track point
         var text = ""
         if (view is Button) {
             text = view.text as String
@@ -174,12 +184,22 @@ class TrackPointFragment : Fragment(), MainActivityNav.LocationUpdateListener {
             }
     }
 
-    override fun onLocationUpdate(location: Location) {
+    override fun onLocationUpdate(location: Location, isGoodQuality: Boolean) {
         _binding?.tvCurLat?.text = String.format("%.10f", location.latitude)
         _binding?.tvCurLong?.text = String.format("%.10f", location.longitude)
         _binding?.tvCurAccuracy?.text = String.format("%.3f", location.accuracy)
 
-        mCurLocation = location
+        if (isGoodQuality) {
+
+            mCurLocation = location
+            mGoodQuality = true
+            binding.ivGpsQualityIcon.setColorFilter(Color.GREEN)
+
+        } else {
+            // do not use the location
+            binding.ivGpsQualityIcon.setColorFilter(Color.RED)
+            mGoodQuality = false
+        }
     }
 
     override fun onResume() {

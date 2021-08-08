@@ -21,4 +21,23 @@
     <string name="menu_navigate">Navigate</string>
     <string name="menu_list_tracked_places">List Tracked Places</string>
     <string name="menu_export">Export</string>
+    <!-- Preference Titles -->
+    <string name="messages_header">Messages</string>
+    <string name="sync_header">Sync</string>
+
+    <!-- Messages Preferences -->
+    <string name="signature_title">Your signature</string>
+    <string name="reply_title">Default reply action</string>
+
+    <!-- Sync Preferences -->
+    <string name="sync_title">Sync email periodically</string>
+    <string name="attachment_title">Download incoming attachments</string>
+    <string name="attachment_summary_on">Automatically download attachments for incoming emails
+    </string>
+    <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <string name="menu_settings">Settings</string>
+    <string name="settings_gps_filter_on">GPS filtering on</string>
+    <string name="lat">Lat:</string>
+    <string name="lon">Long:</string>
+    <string name="accuracy">Accuracy:</string>
 </resources>

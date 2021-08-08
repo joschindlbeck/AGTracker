@@ -45,4 +45,8 @@
         android:name="de.js.app.agtracker.ui.ExportFrament"
         android:label="Export"
         tools:layout="@layout/fragment_export_frament" />
+    <fragment
+        android:id="@+id/nav_settings"
+        android:name="de.js.app.agtracker.ui.SettingsFragment"
+        android:label="SettingsFragment" />
 </navigation>

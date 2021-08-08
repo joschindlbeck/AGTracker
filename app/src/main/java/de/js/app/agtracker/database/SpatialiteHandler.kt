@@ -43,8 +43,9 @@ class SpatialiteHandler {
     @Throws(jsqlite.Exception::class)
     fun init(context: Context) {
         try {
-            //TEST: set environment variable for PROJ
-            val projDir = context.getExternalFilesDir("database/proj")
+            //Set environment variables
+            // for PROJ
+            val projDir = context.getExternalFilesDir("database/proj/proj")
             Os.setenv("PROJ_LIB", projDir?.absolutePath, true)
 
             val dir: File? = context.getExternalFilesDir(DB_DIRECTORY)
@@ -96,7 +97,7 @@ class SpatialiteHandler {
                 zipFile.delete()
             }
         }
-        Os.setenv("PROJ_LIB", projFolder.absolutePath, true)
+        Os.setenv("PROJ_LIB", projFolder.absolutePath + "/proj", true)
 
     }
 

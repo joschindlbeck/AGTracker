@@ -5,6 +5,7 @@ import android.app.AlertDialog
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.location.Location
 import android.location.LocationManager
 import android.net.Uri
@@ -21,6 +22,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import androidx.preference.PreferenceManager
 import com.google.android.gms.location.*
 import com.google.android.material.navigation.NavigationView
 import com.karumi.dexter.Dexter
@@ -30,10 +32,14 @@ import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import de.js.app.agtracker.database.SpatialiteHandler
 import de.js.app.agtracker.databinding.ActivityMainNavBinding
+import de.js.app.agtracker.ui.SETTINGS_GPS_FILTER_ON
+import de.js.app.agtracker.ui.SETTINGS_GPS_MIN_ACCURACY
 import de.js.app.agtracker.util.KalmanLatLong
+import de.js.app.agtracker.util.UncaughtExceptionHandler
 
 
 class MainActivityNav : AppCompatActivity() {
+    private var mPreferences: SharedPreferences? = null
     private var currentSpeed: Float = 0.0f
     private var runStartTimeInMillis: Long = 0
     private var kalmanFilter: KalmanLatLong = KalmanLatLong(0.5f)
@@ -52,6 +58,13 @@ class MainActivityNav : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // set default exception handler
+        Thread.setDefaultUncaughtExceptionHandler(
+            UncaughtExceptionHandler(
+                getExternalFilesDir(null) ?: filesDir
+            )
+        )
 
         // set display always on
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
@@ -87,7 +100,8 @@ class MainActivityNav : AppCompatActivity() {
                 R.id.nav_track_area,
                 R.id.nav_navigation,
                 R.id.nav_list_tracked_places,
-                R.id.nav_export
+                R.id.nav_export,
+                R.id.nav_settings
             ), drawerLayout
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
@@ -163,18 +177,20 @@ class MainActivityNav : AppCompatActivity() {
             override fun onLocationResult(locationResult: LocationResult?) {
                 locationResult ?: return
                 for (location in locationResult.locations) {
-                    if (checkIfValidLocation(location)) {
 
-                        // save location data
-                        mLatitude = location.latitude
-                        mLongitude = location.longitude
-                        mLocation = location
+                    // save location data
+                    mLatitude = location.latitude
+                    mLongitude = location.longitude
+                    mLocation = location
 
-                        //inform listenres
-                        for (l in mLocationUpdateListeners) {
-                            l.onLocationUpdate(location)
-                        }
+                    // check quality of Location
+                    val isGoodQuality = checkIfValidLocation(location)
+
+                    //inform listeners
+                    for (l in mLocationUpdateListeners) {
+                        l.onLocationUpdate(location, isGoodQuality)
                     }
+
                 }
             }
         }
@@ -195,6 +211,10 @@ class MainActivityNav : AppCompatActivity() {
     }
 
     private fun checkIfValidLocation(location: Location): Boolean {
+        if ((mPreferences?.getBoolean(SETTINGS_GPS_FILTER_ON, false) ?: false) != true) {
+            return true
+        }
+
         val age: Long = getLocationAge(location)
 
         if (age > 10 * 1000) { //more than 10 seconds
@@ -210,8 +230,15 @@ class MainActivityNav : AppCompatActivity() {
         }
 
 
+        var minAccuracy = 1.0f
+        try {
+            minAccuracy =
+                mPreferences?.getString(SETTINGS_GPS_MIN_ACCURACY, "1.0")?.toFloat() ?: 1.0f
+        } catch (e: Exception) {
+            Log.e(this.javaClass.simpleName, "Error reading Preference gps_min_accuracy", e)
+        }
         val horizontalAccuracy = location.accuracy
-        if (horizontalAccuracy > 1) { //TODO: What accuracy shall be taken? make it customizable!
+        if (horizontalAccuracy > minAccuracy) { //TODO: What accuracy shall be taken? make it customizable!
             Log.d(this.javaClass.simpleName, "Accuracy is too low.")
             //inaccurateLocationList.add(location)
             return false
@@ -271,6 +298,7 @@ class MainActivityNav : AppCompatActivity() {
         currentSpeed = location.speed
 
         return true
+
     }
 
     private fun getLocationAge(newLocation: Location): Long {
@@ -321,6 +349,7 @@ class MainActivityNav : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        mPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         if (requestingLocationUpdates) startLocationUpdates()
     }
 
@@ -338,7 +367,7 @@ class MainActivityNav : AppCompatActivity() {
     }
 
     public interface LocationUpdateListener {
-        fun onLocationUpdate(location: Location)
+        fun onLocationUpdate(location: Location, isQualityGood: Boolean)
     }
 
     override fun onBackPressed() {
