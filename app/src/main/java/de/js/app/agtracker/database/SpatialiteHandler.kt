@@ -43,11 +43,6 @@ class SpatialiteHandler {
     @Throws(jsqlite.Exception::class)
     fun init(context: Context) {
         try {
-            //Set environment variables
-            // for PROJ
-            val projDir = context.getExternalFilesDir("database/proj/proj")
-            Os.setenv("PROJ_LIB", projDir?.absolutePath, true)
-
             val dir: File? = context.getExternalFilesDir(DB_DIRECTORY)
             val spatialDbFile = File(dir, DB_FILE)
 
@@ -61,6 +56,11 @@ class SpatialiteHandler {
             mDB.open(spatialDbFile.getAbsolutePath(), Constants.SQLITE_OPEN_READWRITE)
             Log.d(TAG, "Database Version: ${mDB.dbversion()}")
 
+            //Set environment variables
+            // for Project DB
+            Os.setenv("PROJ_LIB", dir?.absolutePath + "/proj/proj", true)
+            // for relaxed Security
+            Os.setenv("SPATIALITE_SECURITY", "relaxed", true)
 
         } catch (e: Exception) {
             Log.e(TAG, "Error initializing Database", e)
@@ -80,6 +80,9 @@ class SpatialiteHandler {
 
     private fun copyProj(context: Context, dbDir: File) {
         val projFolder: File = File(dbDir, "proj")
+        if (!projFolder.exists()) {
+            projFolder.mkdir()
+        }
 
         val projDbFile = File(projFolder, "proj.db")
         if (!projDbFile.exists()) {
