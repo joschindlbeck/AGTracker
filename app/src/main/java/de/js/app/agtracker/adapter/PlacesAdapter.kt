@@ -48,6 +48,8 @@ open class PlacesAdapter(
 
         if (holder is MyViewHolder) {
             //holder.itemView.iv_place_image.setImageURI(Uri.parse(model.image))
+
+            holder.itemView.tvField.text = model.field_name
             holder.itemView.tvName.text = model.name
             holder.itemView.tvDate.text = model.date
             //holder.itemView.tvDate.text = DateTimeFormatter.ISO_INSTANT.format(DateTime(model.date))

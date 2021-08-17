@@ -105,6 +105,7 @@ class TrackPointFragment : Fragment(), MainActivityNav.LocationUpdateListener {
             mCurLocation?.longitude ?: 0.0,
             Util.getNowISO8601(),
             1,
+            "",
             Util.getDeviceID(requireContext()),
             ewkt ?: ""
         )

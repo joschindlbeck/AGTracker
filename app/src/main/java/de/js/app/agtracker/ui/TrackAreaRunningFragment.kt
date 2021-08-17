@@ -225,6 +225,7 @@ class TrackAreaRunningFragment : Fragment(), MainActivityNav.LocationUpdateListe
             location.longitude,
             Util.getNowISO8601(),
             1,
+            "",
             Util.getDeviceID(requireContext()),
             ""
         )

@@ -243,7 +243,8 @@ class MainActivity : AppCompatActivity() {
             mLongitude,
             sdf.format(Calendar.getInstance().time).toString(),
             1,
-            "Test",
+            "",
+            "",
             ""
         )
 

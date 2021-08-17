@@ -160,8 +160,10 @@ class SpatialiteHandler {
 
     fun getPlaceList(): ArrayList<TrackedPlaceModel> {
         val list: ArrayList<TrackedPlaceModel> = ArrayList()
-        val selectQuery = "Select id, name, latitude, longitude, date, field_id, device_id, " +
-                "asewkt(geom_multi) from tPlace order by date desc;"
+        val selectQuery =
+            "Select tPlace.id, tPlace.name, latitude, longitude, date, field_id, tFields.name as field_name, " +
+                    "device_id, asewkt(geom_multi) from tPlace inner join tFields where tFields.id = field_id " +
+                    "order by date desc;"
         Log.d(TAG, "Select Statement: " + selectQuery)
         try {
             val stmt = mDB.prepare(selectQuery)
@@ -174,7 +176,8 @@ class SpatialiteHandler {
                     stmt.column_string(4),
                     stmt.column_int(5),
                     stmt.column_string(6),
-                    stmt.column_string(7)
+                    stmt.column_string(7),
+                    stmt.column_string(8)
                 )
                 list.add(place)
             }
