@@ -8,4 +8,10 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="red">#FFFF0000</color>
+
+    <!-- Theme -->
+    <color name="primaryColor">#2e7d32</color>
+    <color name="primaryLightColor">#60ad5e</color>
+    <color name="primaryDarkColor">#005005</color>
+    <color name="primaryTextColor">#ffffff</color>
 </resources>

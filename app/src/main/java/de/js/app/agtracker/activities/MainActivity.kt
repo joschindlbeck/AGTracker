@@ -27,7 +27,7 @@ import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import de.js.app.agtracker.R
 import de.js.app.agtracker.adapter.PlacesAdapter
-import de.js.app.agtracker.database.DatabaseHandler
+import de.js.app.agtracker.database.SpatialiteHandler
 import de.js.app.agtracker.models.TrackedPlaceModel
 import de.js.app.agtracker.util.KMLUtil
 import de.js.app.agtracker.util.SwipeToDeleteCallback
@@ -40,6 +40,7 @@ import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
+    private var dbHandler: SpatialiteHandler? = null
     private val requestingLocationUpdates: Boolean = true
     private lateinit var mFusedLocationClient: FusedLocationProviderClient
     private lateinit var locationCallback: LocationCallback
@@ -111,6 +112,9 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+        // DB
+        dbHandler = SpatialiteHandler()
+        dbHandler?.init(this)
 
         //Load data from DB
         getPlacesFromLocalDB()
@@ -132,11 +136,13 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         if (requestingLocationUpdates) startLocationUpdates()
+        //open db?
     }
 
     override fun onPause() {
         super.onPause()
         stopLocationUpdates()
+        //close db?
     }
 
     private fun stopLocationUpdates() {
@@ -171,8 +177,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getPlacesFromLocalDB() {
-        val dbHandler = DatabaseHandler(this)
-        val placeList = dbHandler.getPlaceList()
+        //val dbHandler = DatabaseHandler(this)
+        //val dbHandler = SpatialiteHandler()
+        //dbHandler.init(this)
+        val placeList = dbHandler!!.getPlaceList()
         if (placeList.size > 0) {
             rvPlaces.visibility = View.VISIBLE
             tv_no_places_found.visibility = View.GONE
@@ -233,9 +241,15 @@ class MainActivity : AppCompatActivity() {
             text,
             mLatitude,
             mLongitude,
-            sdf.format(Calendar.getInstance().time).toString()
+            sdf.format(Calendar.getInstance().time).toString(),
+            1,
+            "",
+            "",
+            ""
         )
 
+
+        /*
         val dbHandler = DatabaseHandler(this)
         val addedPlace = dbHandler.addPlace(trackedPlaceModel)
         if (addedPlace > 0) {
@@ -243,7 +257,16 @@ class MainActivity : AppCompatActivity() {
             vibrate()
             // reload from db
             getPlacesFromLocalDB()
+        }*/
+        //val dbHandler = SpatialiteHandler()
+        //dbHandler.init(this)
+        if (dbHandler!!.addTrackedPlace(trackedPlaceModel) > 0) {
+            //Toast.makeText(this, "Erfolgreich gespeichert", Toast.LENGTH_LONG).show()
+            vibrate()
+            // reload from db
+            getPlacesFromLocalDB()
         }
+
 
     }
 
@@ -271,20 +294,22 @@ class MainActivity : AppCompatActivity() {
     fun onSaveButtonClicked(view: View) {
         var kmlUtil: KMLUtil = KMLUtil()
         var myExternalFile: File = File(getExternalFilesDir("AGTracker"), "TrackedPlace.kml")
-        var kml = kmlUtil.createKML(this)
+        /**
+        var kml = kmlUtil.createKML(this.dbHandler!!)
         var ok = kmlUtil.writeKMLToFile(myExternalFile, kml)
         if (ok) {
-            Toast.makeText(
-                this,
-                "Speichern erfolgreich",
-                Toast.LENGTH_LONG
-            ).show()
+        Toast.makeText(
+        this,
+        "Speichern erfolgreich",
+        Toast.LENGTH_LONG
+        ).show()
         } else {
-            Toast.makeText(
-                this,
+        Toast.makeText(
+        this,
                 "Fehler beim speichern",
                 Toast.LENGTH_LONG
             ).show()
         }
+         */
     }
 }

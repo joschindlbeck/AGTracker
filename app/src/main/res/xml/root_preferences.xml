@@ -1,0 +1,53 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory android:title="GPS">
+        <SwitchPreferenceCompat
+            app:key="gps_filter_on"
+            app:title="@string/settings_gps_filter_on" />
+        <EditTextPreference
+            android:defaultValue="1.0"
+            android:key="gps_min_accuracy"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="Minimum GPS accuracy in m"
+            app:isPreferenceVisible="true"
+            app:summary="GPS accuracy in Meter e.g. 1.0 "
+            app:useSimpleSummaryProvider="true" />
+    </PreferenceCategory>
+
+    <!--
+    <PreferenceCategory app:title="@string/messages_header">
+
+
+        <EditTextPreference
+            app:key="signature"
+            app:title="@string/signature_title"
+            app:useSimpleSummaryProvider="true" />
+
+        <ListPreference
+            app:defaultValue="reply"
+            app:entries="@array/reply_entries"
+            app:entryValues="@array/reply_values"
+            app:key="reply"
+            app:title="@string/reply_title"
+            app:useSimpleSummaryProvider="true" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/sync_header">
+
+        <SwitchPreferenceCompat
+            app:key="sync"
+            app:title="@string/sync_title" />
+
+        <SwitchPreferenceCompat
+            app:dependency="sync"
+            app:key="attachment"
+            app:summaryOff="@string/attachment_summary_off"
+            app:summaryOn="@string/attachment_summary_on"
+            app:title="@string/attachment_title" />
+
+    </PreferenceCategory>
+    -->
+</PreferenceScreen>

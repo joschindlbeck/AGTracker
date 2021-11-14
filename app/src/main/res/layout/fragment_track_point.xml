@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.TrackPointFragment">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="24dp"
+                android:layout_marginStart="8dp"
+                android:text="@string/lat"
+                android:textSize="@dimen/text_small"
+                app:layout_constraintBaseline_toBaselineOf="@+id/tvCurLat"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <TextView
+                android:id="@+id/tvCurLat"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:text="42.23342342"
+                android:textSize="@dimen/text_small"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/textView2"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="wrap_content"
+                android:layout_height="24dp"
+                android:layout_marginStart="20dp"
+                android:text="@string/lon"
+                android:textSize="@dimen/text_small"
+                app:layout_constraintBaseline_toBaselineOf="@+id/tvCurLong"
+                app:layout_constraintStart_toEndOf="@+id/tvCurLat" />
+
+            <TextView
+                android:id="@+id/tvCurLong"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:text="42.23342342"
+                android:textSize="@dimen/text_small"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/textView3"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="wrap_content"
+                android:layout_height="24dp"
+                android:text="@string/accuracy"
+                android:textSize="@dimen/text_small"
+                app:layout_constraintBaseline_toBaselineOf="@+id/tvCurAccuracy"
+                app:layout_constraintEnd_toStartOf="@+id/tvCurAccuracy" />
+
+            <TextView
+                android:id="@+id/tvCurAccuracy"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:text="1"
+                android:textSize="@dimen/text_small"
+                app:layout_constraintEnd_toStartOf="@+id/ivGpsQualityIcon"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/ivGpsQualityIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="4dp"
+                android:src="@drawable/ic_baseline_my_location_24"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+        <!-- <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textSize="10dp"
+                android:text="Lat:"/>
+            <TextView
+                android:id="@+id/tvCurLat"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textSize="10dp"
+                android:text="00.0"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textSize="10dp"
+                android:text="Long:"
+                android:layout_marginLeft="20dp"/>
+            <TextView
+                android:id="@+id/tvCurLong"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textSize="10dp"
+                android:text="00.0"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textSize="10dp"
+                android:text="Accuracy:"
+                android:layout_marginLeft="20dp"/>
+            <TextView
+                android:id="@+id/tvCurAccuracy"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textSize="10dp"
+                android:text="999.9"/>
+        </LinearLayout> -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_marginTop="2dp">
+            <Button
+                android:id="@+id/btn_track_1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="Schachtelhalm"
+                android:layout_margin="2dp"/>
+            <Button
+                android:id="@+id/btn_track_2"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="Ackerwinde"
+                android:layout_margin="2dp"/>
+            <Button
+                android:id="@+id/btn_track_3"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="Distel"
+                android:layout_margin="2dp"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_marginTop="2dp">
+            <Button
+                android:id="@+id/btn_track_4"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="Windenknöterich"
+                android:layout_margin="2dp"/>
+            <Button
+                android:id="@+id/btn_track_5"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="Gras"
+                android:layout_margin="2dp"/>
+            <Button
+                android:id="@+id/btn_track_6"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="Hundspetersilie"
+                android:layout_margin="2dp"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_marginTop="2dp">
+            <Button
+                android:id="@+id/btn_track_7"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="Unkraut1"
+                android:layout_margin="2dp"/>
+            <Button
+                android:id="@+id/btn_track_8"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="Unkraut2"
+                android:layout_margin="2dp"/>
+            <Button
+                android:id="@+id/btn_track_9"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="Sontiges"
+                android:layout_margin="2dp"/>
+        </LinearLayout>
+    </LinearLayout>
+</FrameLayout>

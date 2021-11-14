@@ -1,25 +1,21 @@
 package de.js.app.agtracker.adapter
 
 import android.content.Context
-import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import de.js.app.agtracker.MainActivityNav
 import de.js.app.agtracker.R
-import de.js.app.agtracker.database.DatabaseHandler
 import de.js.app.agtracker.models.TrackedPlaceModel
-import kotlinx.android.synthetic.main.activity_main.view.*
 import kotlinx.android.synthetic.main.item_place.view.*
-import kotlinx.android.synthetic.main.item_place.view.tvLong
-import java.text.DateFormat
-import java.time.Instant
-import java.time.format.DateTimeFormatter
 
 open class PlacesAdapter(
     private val context: Context,
-    private var list: ArrayList<TrackedPlaceModel>):RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    private var list: ArrayList<TrackedPlaceModel>
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var onClickListener: OnClickListener? = null
+
     /**
      * Setzt das Item in MyViewHolder auf das Item, welches in XML von uns erstellt wurde
      *
@@ -36,6 +32,7 @@ open class PlacesAdapter(
             )
         )
     }
+
     /**
      * Verknüpft ein Item aus der View mit einem Element aus der ArrayList
      *
@@ -51,11 +48,13 @@ open class PlacesAdapter(
 
         if (holder is MyViewHolder) {
             //holder.itemView.iv_place_image.setImageURI(Uri.parse(model.image))
+
+            holder.itemView.tvField.text = model.field_name
             holder.itemView.tvName.text = model.name
             holder.itemView.tvDate.text = model.date
             //holder.itemView.tvDate.text = DateTimeFormatter.ISO_INSTANT.format(DateTime(model.date))
-            holder.itemView.tvLat.text= model.latitude.toString()
-            holder.itemView.tvLong.text =model.longitude.toString()
+            holder.itemView.tvLat.text = String.format("%.6f", model.latitude)
+            holder.itemView.tvLong.text = String.format("%.6f", model.longitude)
 
             //set onClickListener for button
             holder.itemView.btnViewOnMap.setOnClickListener {
@@ -75,8 +74,9 @@ open class PlacesAdapter(
     }
 
     fun removeAt(position: Int) {
-        val dbHandler = DatabaseHandler(context)
-        val isDeleted = dbHandler.deleteTrackedPlace(list[position])
+
+        val isDeleted =
+            (context as MainActivityNav).dbHandler?.deleteTrackedPlace(list[position]) ?: 0
 
         if (isDeleted > 0) {
             list.removeAt(position)

@@ -26,25 +26,34 @@
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:padding="@dimen/item_place_content_padding">
-
+        <!--
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/iv_place_image"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:src="@mipmap/ic_launcher_round"
             app:civ_border_width="2dp"
-            app:civ_border_color="#FFFFFFFF"/>
+            app:civ_border_color="#FFFFFFFF"/> -->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/item_place_ll_margin_start"
             android:layout_marginEnd="@dimen/item_place_ll_margin_end"
             android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvField"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:text="Field" />
+
             <TextView
                 android:id="@+id/tvName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:text="Name"/>
+                android:textStyle="bold"
+                tools:text="Name" />
+
             <TextView
                 android:id="@+id/tvDate"
                 android:layout_width="match_parent"
@@ -61,19 +70,30 @@
                 android:id="@+id/tvLat"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:text="Lat"/>
+                tools:text="Lat" />
+
             <TextView
                 android:id="@+id/tvLong"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:text="Long"/>
+                tools:text="Long" />
         </LinearLayout>
-        <Button
-            android:id="@+id/btnViewOnMap"
+
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Map"
-            android:onClick="onMapButtonClicked"/>
+            android:layout_marginStart="@dimen/item_place_ll_margin_start"
+            android:layout_marginEnd="@dimen/item_place_ll_margin_end"
+            android:orientation="vertical">
+
+            <ImageButton
+                android:id="@+id/btnViewOnMap"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_baseline_navigation_24"
+                android:background="@drawable/btn_background_round"
+                android:onClick="onMapButtonClicked" />
+        </LinearLayout>
     </LinearLayout>
     </androidx.cardview.widget.CardView>
 

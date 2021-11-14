@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.NavigationFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:textSize="24dp"
+                    android:text="Heading"
+                    android:layout_weight="1"
+                android:gravity="center"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textSize="24dp"
+                android:text="Accuracy"
+                android:layout_weight="1"
+                android:gravity="center"/>
+        </LinearLayout>
+       <LinearLayout
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:orientation="horizontal">
+           <TextView
+               android:id="@+id/tv_headingTarget"
+               android:layout_width="wrap_content"
+               android:layout_height="match_parent"
+               android:textSize="24dp"
+               android:text="36°"
+               android:layout_weight="1"
+               android:gravity="center" />
+
+           <TextView
+               android:id="@+id/tv_accuracy"
+               android:layout_width="wrap_content"
+               android:layout_height="match_parent"
+               android:textSize="24dp"
+               android:text="12,1"
+               android:layout_weight="1"
+               android:gravity="center" />
+       </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+
+                <ImageView
+                    android:id="@+id/iv_direction_background"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/ic_background" />
+
+                <ImageView
+                    android:id="@+id/iv_direction_arrow"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/ic_arrow" />
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/tv_distance_arrow"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="32dp"
+                android:gravity="center"
+                android:text="10,3 m" />
+        </LinearLayout>
+        <!-- Map -->
+
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/map"
+            class="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="4" />
+
+    </LinearLayout>
+</FrameLayout>

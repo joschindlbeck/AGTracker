@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/nav_home">
+
+    <fragment
+        android:id="@+id/nav_home"
+        android:name="de.js.app.agtracker.ui.home.HomeFragment"
+        android:label="@string/menu_home"
+        tools:layout="@layout/fragment_home" />
+
+    <fragment
+        android:id="@+id/nav_track_point"
+        android:name="de.js.app.agtracker.ui.TrackPointFragment"
+        android:label="@string/menu_track_point"
+        tools:layout="@layout/fragment_track_point"/>
+
+    <fragment
+        android:id="@+id/nav_track_area"
+        android:name="de.js.app.agtracker.ui.TrackAreaFragement"
+        android:label="@string/menu_track_area"
+        tools:layout="@layout/fragment_track_area">
+        <action
+            android:id="@+id/action_nav_track_area_to_trackAreaRunningFragment"
+            app:destination="@id/trackAreaRunningFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_navigation"
+        android:name="de.js.app.agtracker.ui.NavigationFragment"
+        android:label="@string/menu_navigate"
+        tools:layout="@layout/fragment_navigation" />
+    <fragment
+        android:id="@+id/nav_list_tracked_places"
+        android:name="de.js.app.agtracker.ui.ListTrackedPlacesFragment"
+        tools:layout="@layout/fragment_list_tracked_places"
+        android:label="@string/menu_list_tracked_places">
+        <action
+            android:id="@+id/action_nav_tracked_places_to_NaviagtionFragment"
+            app:destination="@id/nav_navigation" />
+    </fragment>
+    <fragment
+        android:id="@+id/trackAreaRunningFragment"
+        android:name="de.js.app.agtracker.ui.TrackAreaRunningFragment"
+        android:label="@string/tracking_running"
+        tools:layout="@layout/fragment_track_area_running" />
+    <fragment
+        android:id="@+id/nav_export"
+        android:name="de.js.app.agtracker.ui.ExportFrament"
+        android:label="@string/menu_export"
+        tools:layout="@layout/fragment_export_frament" />
+    <fragment
+        android:id="@+id/nav_settings"
+        android:name="de.js.app.agtracker.ui.SettingsFragment"
+        android:label="@string/menu_settings" />
+    <fragment
+        android:id="@+id/navigationInputFragment"
+        android:name="de.js.app.agtracker.ui.NavigationInputFragment"
+        android:label="@string/menu_navigate"
+        tools:layout="@layout/fragment_navigation_input">
+        <action
+            android:id="@+id/action_navigationInputFragment_to_nav_navigation"
+            app:destination="@id/nav_navigation" />
+    </fragment>
+</navigation>

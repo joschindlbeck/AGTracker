@@ -8,4 +8,8 @@ data class TrackedPlaceModel (
     val latitude: Double,
     val longitude: Double,
     val date: String,
-        ): Serializable
+    val field_id: Int,
+    val field_name: String,
+    val device_id: String?,
+    val geom_multi: String
+): Serializable
