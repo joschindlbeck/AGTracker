@@ -62,7 +62,19 @@ class TrackPointFragment : Fragment(), MainActivityNav.LocationUpdateListener {
         _binding = FragmentTrackPointBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
+        // set text from preferences
+        val mainActivity = activity as MainActivityNav
+        val btnTexts: List<String> = mainActivity.getButtonTextsFromPreferences()
+        binding.btnTrack1.text = btnTexts[0]
+        binding.btnTrack2.text = btnTexts[1]
+        binding.btnTrack3.text = btnTexts[2]
+        binding.btnTrack4.text = btnTexts[3]
+        binding.btnTrack5.text = btnTexts[4]
+        binding.btnTrack6.text = btnTexts[5]
+        binding.btnTrack7.text = btnTexts[6]
+        binding.btnTrack8.text = btnTexts[7]
 
+        // set click handler
         binding.btnTrack1.setOnClickListener { onTrackButtonClicked(it) }
         binding.btnTrack2.setOnClickListener { onTrackButtonClicked(it) }
         binding.btnTrack3.setOnClickListener { onTrackButtonClicked(it) }
@@ -71,7 +83,7 @@ class TrackPointFragment : Fragment(), MainActivityNav.LocationUpdateListener {
         binding.btnTrack6.setOnClickListener { onTrackButtonClicked(it) }
         binding.btnTrack7.setOnClickListener { onTrackButtonClicked(it) }
         binding.btnTrack8.setOnClickListener { onTrackButtonClicked(it) }
-        binding.btnTrack9.setOnClickListener { onTrackButtonClicked(it) }
+        //binding.btnTrack9.setOnClickListener { onTrackButtonClicked(it) }
 
         return root
 
