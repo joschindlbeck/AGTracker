@@ -33,6 +33,8 @@ After export of the GPS data from the app QGIS is used to visualize the data, to
 
 Handover to AGOpenGPS is done by automated creation of a Sections-File to "mock" AGOpenGPS that every place in the specific field has been already applied besides the weed spots. Therefore in QGIS a processing routine creates an area of the field and substracts the weed spots (basically cuts holes in the area). The remaining area is then devided to square fields and those are processed to a Section file by a custom python script.
 
+For a detailed explanaition see this [video](https://vimeo.com/645569057)
+
 ### AgOpenGPS processing
 
 The created Sections file can than be imported in AgOpenGPS as usual and will result in a partly applied field where only the relevant spots are not yeat applied. With the AgOpenGPS section control enabled, only the weed spots will be applied.
