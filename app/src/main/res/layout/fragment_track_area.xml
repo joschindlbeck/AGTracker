@@ -13,14 +13,17 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="100dp"
-            android:layout_marginTop="2dp">
+            android:layout_marginTop="2dp"
+            android:layout_marginHorizontal="@dimen/btn_hoizontal_margin">
+
             <Button
                 android:id="@+id/btn_track_1"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="Schachtelhalm"
-                android:layout_margin="2dp"/>
+                android:layout_margin="2dp" />
+
             <Button
                 android:id="@+id/btn_track_2"
                 android:layout_width="0dp"
@@ -28,65 +31,76 @@
                 android:layout_weight="1"
                 android:text="Ackerwinde"
                 android:layout_margin="2dp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginHorizontal="@dimen/btn_hoizontal_margin">>
+
             <Button
                 android:id="@+id/btn_track_3"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="Distel"
-                android:layout_margin="2dp"/>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:layout_marginTop="2dp">
+                android:layout_margin="2dp" />
+
             <Button
                 android:id="@+id/btn_track_4"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="Windenknöterich"
-                android:layout_margin="2dp"/>
+                android:layout_margin="2dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginHorizontal="@dimen/btn_hoizontal_margin">>
+
             <Button
                 android:id="@+id/btn_track_5"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="Gras"
-                android:layout_margin="2dp"/>
+                android:layout_margin="2dp" />
+
             <Button
                 android:id="@+id/btn_track_6"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="Hundspetersilie"
-                android:layout_margin="2dp"/>
+                android:layout_margin="2dp" />
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="100dp"
-            android:layout_marginTop="2dp">
+            android:layout_marginTop="2dp"
+            android:layout_marginHorizontal="@dimen/btn_hoizontal_margin">>
+
             <Button
                 android:id="@+id/btn_track_7"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="Unkraut1"
-                android:layout_margin="2dp"/>
+                android:layout_margin="2dp" />
+
             <Button
                 android:id="@+id/btn_track_8"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="Unkraut2"
-                android:layout_margin="2dp"/>
-            <Button
-                android:id="@+id/btn_track_9"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="Sontiges"
-                android:layout_margin="2dp"/>
+                android:layout_margin="2dp" />
         </LinearLayout>
     </LinearLayout>
 

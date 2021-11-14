@@ -212,7 +212,7 @@ class MainActivityNav : AppCompatActivity() {
     }
 
     private fun checkIfValidLocation(location: Location): Boolean {
-        if ((mPreferences?.getBoolean(SETTINGS_GPS_FILTER_ON, false) ?: false) != true) {
+        if (mPreferences?.getBoolean(SETTINGS_GPS_FILTER_ON, false) != true) {
             return true
         }
 
@@ -374,5 +374,16 @@ class MainActivityNav : AppCompatActivity() {
     override fun onBackPressed() {
         super.onBackPressed()
 
+    }
+
+    fun getButtonTextsFromPreferences(): List<String> {
+        // get Texts for buttons from Settings, ids are btn1, btn2, ..., btn8
+        var btnNo: Int = 0
+        var textList: MutableList<String> = mutableListOf()
+        for (btnNo in 1..8 step 1) {
+            var settingsId: String = "btn$btnNo"
+            mPreferences?.getString(settingsId, "")?.let { textList.add(it) }
+        }
+        return textList
     }
 }

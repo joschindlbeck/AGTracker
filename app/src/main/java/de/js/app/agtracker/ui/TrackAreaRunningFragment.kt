@@ -139,6 +139,8 @@ class TrackAreaRunningFragment : Fragment(), MainActivityNav.LocationUpdateListe
         _binding?.tvCurLat?.text = String.format("%.10f", location.latitude)
         _binding?.tvCurLong?.text = String.format("%.10f", location.longitude)
         _binding?.tvCurAccuracy?.text = String.format("%.3f", location.accuracy)
+        _binding?.tvCurLat2?.text = String.format("%.10f", location.latitude)
+        _binding?.tvCurLong2?.text = String.format("%.10f", location.longitude)
 
         if (isGoodQuality) {
 

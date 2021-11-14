@@ -16,6 +16,73 @@
             app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
 
+    <PreferenceCategory android:title="@string/pref_btns">
+        <EditTextPreference
+            android:defaultValue="Distel"
+            android:key="btn1"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="Text für Button 1"
+            app:isPreferenceVisible="true"
+            app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
+            android:defaultValue="Ackerwinde"
+            android:key="btn2"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="Text für Button 2"
+            app:isPreferenceVisible="true"
+            app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
+            android:defaultValue="Schachtelhalm"
+            android:key="btn3"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="Text für Button 3"
+            app:isPreferenceVisible="true"
+            app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
+            android:defaultValue="Hundspetersilie"
+            android:key="btn4"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="Text für Button 4"
+            app:isPreferenceVisible="true"
+            app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
+            android:defaultValue="Gras"
+            android:key="btn5"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="Text für Button 5"
+            app:isPreferenceVisible="true"
+            app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
+            android:defaultValue="Windenknöterich"
+            android:key="btn6"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="Text für Button 6"
+            app:isPreferenceVisible="true"
+            app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
+            android:defaultValue="Anderes Unkraut"
+            android:key="btn7"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="Text für Button 7"
+            app:isPreferenceVisible="true"
+            app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
+            android:defaultValue="Sonstiges"
+            android:key="btn8"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="Text für Button 8"
+            app:isPreferenceVisible="true"
+            app:useSimpleSummaryProvider="true" />
+    </PreferenceCategory>
+
     <!--
     <PreferenceCategory app:title="@string/messages_header">
 
