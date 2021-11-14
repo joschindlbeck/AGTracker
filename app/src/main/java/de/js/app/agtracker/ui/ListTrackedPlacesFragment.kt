@@ -1,18 +1,18 @@
 package de.js.app.agtracker.ui
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import de.js.app.agtracker.MainActivityNav
-import de.js.app.agtracker.activities.MainActivity
-import de.js.app.agtracker.activities.MapActivity
+import de.js.app.agtracker.R
 import de.js.app.agtracker.adapter.PlacesAdapter
 import de.js.app.agtracker.databinding.FragmentListTrackedPlacesBinding
 import de.js.app.agtracker.models.TrackedPlaceModel
@@ -70,9 +70,16 @@ class ListTrackedPlacesFragment : Fragment() {
         placesAdapter.setOnClickListener(object :
             PlacesAdapter.OnClickListener {
             override fun onClick(position: Int, model: TrackedPlaceModel) {
-                val intent = Intent(requireContext(), MapActivity::class.java)
-                intent.putExtra(MainActivity.EXTRA_PLACE_DETAILS, model)
-                startActivity(intent)
+
+                // navigate to Navigation Fragment
+                findNavController().navigate(
+                    R.id.action_nav_tracked_places_to_NaviagtionFragment,
+                    bundleOf(Pair(ARG_PLACE_ID, model.id))
+                )
+
+                //val intent = Intent(requireContext(), MapActivity::class.java)
+                //intent.putExtra(MainActivity.EXTRA_PLACE_DETAILS, model)
+                //startActivity(intent)
             }
         })
 

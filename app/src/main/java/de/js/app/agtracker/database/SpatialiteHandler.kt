@@ -189,6 +189,37 @@ class SpatialiteHandler {
         return list
     }
 
+    fun getPlace(id: Int): TrackedPlaceModel {
+        val list: ArrayList<TrackedPlaceModel> = ArrayList()
+        val selectQuery =
+            "Select tPlace.id, tPlace.name, latitude, longitude, date, field_id, tFields.name as field_name, " +
+                    "device_id, asewkt(geom_multi) from tPlace inner join tFields on tFields.id = field_id " +
+                    "where tPlace.id = $id;"
+        Log.d(TAG, "Select Statement: " + selectQuery)
+        try {
+            val stmt = mDB.prepare(selectQuery)
+            while (stmt.step()) {
+                val place = TrackedPlaceModel(
+                    stmt.column_int(0),
+                    stmt.column_string(1),
+                    stmt.column_double(2),
+                    stmt.column_double(3),
+                    stmt.column_string(4),
+                    stmt.column_int(5),
+                    stmt.column_string(6),
+                    stmt.column_string(7),
+                    stmt.column_string(8)
+                )
+                list.add(place)
+            }
+            stmt.reset()
+            stmt.close()
+        } catch (e: SQLiteException) {
+            return TrackedPlaceModel(0, "Place not found", 0.0, 0.0, "", 0, "", "", "")
+        }
+        return list.first()
+    }
+
     fun getExportKml(): ArrayList<KmlExportModel> {
         val list: ArrayList<KmlExportModel> = ArrayList()
         val selectQuery = "Select * from vExportKml;"
@@ -316,6 +347,29 @@ class SpatialiteHandler {
         val success = stmt.step()
         stmt.close()
     }
+
+    /**
+     * Get the convex hull of a place as WellKnownText Representation
+     * @param id ID of the place (db key)
+     */
+    fun getConvexHullAsWKT(id: Int): String {
+        var wkt = ""
+        val selectQuery = "Select aswkt(convexhull(geom_multi))from tPlace where id = $id;"
+        Log.d(TAG, "Select Statement: " + selectQuery)
+        try {
+            val stmt = mDB.prepare(selectQuery)
+            while (stmt.step()) {
+                wkt = stmt.column_string(0)
+            }
+            stmt.reset()
+            stmt.close()
+            return wkt
+        } catch (e: SQLiteException) {
+            Log.e(TAG, "Error getting ConvexHull as GeoJSON", e)
+            return wkt
+        }
+    }
+
 }
 
 

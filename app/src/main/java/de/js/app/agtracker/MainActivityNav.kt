@@ -98,7 +98,8 @@ class MainActivityNav : AppCompatActivity() {
                 R.id.nav_home,
                 R.id.nav_track_point,
                 R.id.nav_track_area,
-                R.id.nav_navigation,
+                //R.id.nav_navigation,
+                R.id.navigationInputFragment,
                 R.id.nav_list_tracked_places,
                 R.id.nav_export,
                 R.id.nav_settings
