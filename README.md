@@ -22,6 +22,8 @@ In a nutshell, you click a button on the app and the app starts to record GPS po
 ![Start recording](/docs/images/Screenshot_area_tracking_start1.png)
 ![Start recording](/docs/images/screenshot_area_tracking_1.png)
 
+![Demo Video](https://youtu.be/wDYr2NimR5c)
+
 To enable a high degree of accurracy, the app gets the GPS coordinates by an Ardusimple F9P GPS receiver with NTRIP data correction. The GPS handling is done via the [Lefebure NTRIP Client](https://play.google.com/store/apps/details?id=com.lefebure.ntripclient&hl=de&gl=US) and forwarded to the AG Tracker app as GPS mock signal.
 
 ### QGIS processing
