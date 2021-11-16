@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">AGTracker</string>
     <string name="note_text_no_places_found">Keine Daten gefunden</string>
-    <string name="google_maps_api_key">AIzaSyA5_kCgDCmLiEty0-JT1TleLlU8qZ_e8XA</string>
+    <string name="google_maps_api_key" translatable="false">AIzaSyA5_kCgDCmLiEty0-JT1TleLlU8qZ_e8XA</string>
     <string name="title_activity_main_nav">MainActivityNav</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -23,18 +23,6 @@
     <string name="menu_export">Export</string>
     <!-- Preference Titles -->
     <string name="messages_header">Messages</string>
-    <string name="sync_header">Sync</string>
-
-    <!-- Messages Preferences -->
-    <string name="signature_title">Your signature</string>
-    <string name="reply_title">Default reply action</string>
-
-    <!-- Sync Preferences -->
-    <string name="sync_title">Sync email periodically</string>
-    <string name="attachment_title">Download incoming attachments</string>
-    <string name="attachment_summary_on">Automatically download attachments for incoming emails
-    </string>
-    <string name="attachment_summary_off">Only download attachments when manually requested</string>
     <string name="menu_settings">Einstellungen</string>
     <string name="settings_gps_filter_on">GPS Filter an</string>
     <string name="lat">Lat:</string>

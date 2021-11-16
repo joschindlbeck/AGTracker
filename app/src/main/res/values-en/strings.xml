@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">AGTracker</string>
+    <string name="note_text_no_places_found">No data found</string>
+    <string name="title_activity_main_nav">Main Activity Nav</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">AG Tracker v0.1</string>
+    <string name="menu_home">Field</string>
+    <string name="menu_track_point">Record point</string>
+    <string name="menu_track_area">Record area</string>
+    <string name="menu_navigate">Navigation</string>
+    <string name="menu_list_tracked_places">List</string>
+    <string name="menu_export">Export</string>
+    <string name="messages_header">Messages</string>
+    <string name="menu_settings">Settings</string>
+    <string name="settings_gps_filter_on">GPS filter on</string>
+    <string name="lat">Lat:</string>
+    <string name="lon">Long:</string>
+    <string name="accuracy">Accuracy</string>
+    <string name="tracking_running">Tracking on</string>
+    <string name="nav_input_enter_coordinates">Enter coordinates</string>
+    <string name="btn_start_navigation">Start Navigation</string>
+    <string name="pref_btns">Buttons</string>
+    <string name="nav_header_subtitle">Alpha Version</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+    <string name="menu_gallery">Gallery</string>
+    <string name="menu_slideshow">Slideshow</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
