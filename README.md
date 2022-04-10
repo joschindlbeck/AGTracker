@@ -1,4 +1,4 @@
-# AGTracker - Precision spraying for AgOpenGPS
+# AGTracker - A Android APP and idea how to record precision areas for farming purposes.
 
 **work in progress!**
 
