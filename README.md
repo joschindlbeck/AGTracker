@@ -1,4 +1,4 @@
-# AGTracker - A Android APP and idea how to record precision areas for farming purposes.
+# AGTracker - An Android APP and idea how to record precision areas for farming purposes.
 
 **work in progress!**
 
@@ -36,6 +36,8 @@ After export of the GPS data from the app QGIS is used to visualize the data, to
 Handover to AGOpenGPS is done by automated creation of a Sections-File to "mock" AGOpenGPS that every place in the specific field has been already applied besides the weed spots. Therefore in QGIS a processing routine creates an area of the field and substracts the weed spots (basically cuts holes in the area). The remaining area is then devided to square fields and those are processed to a Section file by a custom python script.
 
 For a detailed explanaition see this [video](https://vimeo.com/645569057)
+
+Details on the QGIS processing and the relevant scripts can be found [here](https://github.com/joschindlbeck/aog_qgis).
 
 ### AgOpenGPS processing
 
