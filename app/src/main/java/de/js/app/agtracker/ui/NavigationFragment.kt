@@ -268,7 +268,9 @@ class NavigationFragment : Fragment(), MainActivityNav.LocationUpdateListener, O
         // Draw target location boundary (if we navigate to a Place)
         if (mPlaceDetails != null) {
             val polyOptions = getPolygonBoundaryForTarget(mPlaceDetails!!.id)
-            var poly = googleMap.addPolygon(polyOptions)
+            if (polyOptions.points.isNotEmpty()) {
+                var poly = googleMap.addPolygon(polyOptions)
+            }
         }
 
         mGoogleMap = googleMap
@@ -284,9 +286,18 @@ class NavigationFragment : Fragment(), MainActivityNav.LocationUpdateListener, O
         val pointList = wkt.replace("POLYGON", "").replace("(", "").replace(")", "")
         val coords = pointList.split(",")
         for (coord in coords) {
-            val lat = coord.split(" ")[1].toDouble()
-            val long = coord.split(" ")[0].toDouble()
-            polygon.add(LatLng(lat, long))
+            try {
+                val lat = coord.split(" ")[1].toDouble()
+                val long = coord.split(" ")[0].toDouble()
+                polygon.add(LatLng(lat, long))
+            } catch (e: IndexOutOfBoundsException) {
+                Log.e(
+                    NavigationFragment.javaClass.simpleName,
+                    "Error getting Coords from convex hull",
+                    e
+                )
+            }
+
         }
         return polygon
     }

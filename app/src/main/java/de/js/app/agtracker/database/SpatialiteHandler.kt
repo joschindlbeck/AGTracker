@@ -162,22 +162,22 @@ class SpatialiteHandler {
         val list: ArrayList<TrackedPlaceModel> = ArrayList()
         val selectQuery =
             "Select tPlace.id, tPlace.name, latitude, longitude, date, field_id, tFields.name as field_name, " +
-                    "asewkt(geom_multi), device_id from tPlace inner join tFields where tFields.id = field_id " +
+                    "device_id, asewkt(geom_multi) from tPlace inner join tFields where tFields.id = field_id " +
                     "order by date desc;"
         Log.d(TAG, "Select Statement: " + selectQuery)
         try {
             val stmt = mDB.prepare(selectQuery)
             while (stmt.step()) {
                 val place = TrackedPlaceModel(
-                    stmt.column_int(0),
-                    stmt.column_string(1),
-                    stmt.column_double(2),
-                    stmt.column_double(3),
-                    stmt.column_string(4),
-                    stmt.column_int(5),
-                    stmt.column_string(6),
-                    stmt.column_string(7),
-                    stmt.column_string(8)
+                    stmt.column_int(0) ?: 0,
+                    stmt.column_string(1) ?: "",
+                    stmt.column_double(2) ?: 0.0,
+                    stmt.column_double(3) ?: 0.0,
+                    stmt.column_string(4) ?: "",
+                    stmt.column_int(5) ?: 0,
+                    stmt.column_string(6) ?: "",
+                    stmt.column_string(7) ?: "",
+                    stmt.column_string(8) ?: ""
                 )
                 list.add(place)
             }
@@ -200,15 +200,15 @@ class SpatialiteHandler {
             val stmt = mDB.prepare(selectQuery)
             while (stmt.step()) {
                 val place = TrackedPlaceModel(
-                    stmt.column_int(0),
-                    stmt.column_string(1),
-                    stmt.column_double(2),
-                    stmt.column_double(3),
-                    stmt.column_string(4),
-                    stmt.column_int(5),
-                    stmt.column_string(6),
-                    stmt.column_string(7),
-                    stmt.column_string(8)
+                    stmt.column_int(0) ?: 0,
+                    stmt.column_string(1) ?: "",
+                    stmt.column_double(2) ?: 0.0,
+                    stmt.column_double(3) ?: 0.0,
+                    stmt.column_string(4) ?: "",
+                    stmt.column_int(5) ?: 0,
+                    stmt.column_string(6) ?: "",
+                    stmt.column_string(7) ?: "",
+                    stmt.column_string(8) ?: ""
                 )
                 list.add(place)
             }
@@ -359,7 +359,7 @@ class SpatialiteHandler {
         try {
             val stmt = mDB.prepare(selectQuery)
             while (stmt.step()) {
-                wkt = stmt.column_string(0)
+                wkt = stmt.column_string(0) ?: ""
             }
             stmt.reset()
             stmt.close()
