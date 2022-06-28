@@ -162,7 +162,7 @@ class SpatialiteHandler {
         val list: ArrayList<TrackedPlaceModel> = ArrayList()
         val selectQuery =
             "Select tPlace.id, tPlace.name, latitude, longitude, date, field_id, tFields.name as field_name, " +
-                    "device_id, asewkt(geom_multi) from tPlace inner join tFields where tFields.id = field_id " +
+                    "asewkt(geom_multi), device_id from tPlace inner join tFields where tFields.id = field_id " +
                     "order by date desc;"
         Log.d(TAG, "Select Statement: " + selectQuery)
         try {
