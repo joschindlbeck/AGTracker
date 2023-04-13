@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.preference.PreferenceManager
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.SphericalUtil
 import de.js.app.agtracker.MainActivityNav
@@ -65,14 +66,16 @@ class TrackPointFragment : Fragment(), MainActivityNav.LocationUpdateListener {
         // set text from preferences
         val mainActivity = activity as MainActivityNav
         val btnTexts: List<String> = mainActivity.getButtonTextsFromPreferences()
-        binding.btnTrack1.text = btnTexts[0]
-        binding.btnTrack2.text = btnTexts[1]
-        binding.btnTrack3.text = btnTexts[2]
-        binding.btnTrack4.text = btnTexts[3]
-        binding.btnTrack5.text = btnTexts[4]
-        binding.btnTrack6.text = btnTexts[5]
-        binding.btnTrack7.text = btnTexts[6]
-        binding.btnTrack8.text = btnTexts[7]
+        if(btnTexts.size == 8 ) {
+            binding.btnTrack1.text = btnTexts[0]
+            binding.btnTrack2.text = btnTexts[1]
+            binding.btnTrack3.text = btnTexts[2]
+            binding.btnTrack4.text = btnTexts[3]
+            binding.btnTrack5.text = btnTexts[4]
+            binding.btnTrack6.text = btnTexts[5]
+            binding.btnTrack7.text = btnTexts[6]
+            binding.btnTrack8.text = btnTexts[7]
+        }
 
         // set click handler
         binding.btnTrack1.setOnClickListener { onTrackButtonClicked(it) }

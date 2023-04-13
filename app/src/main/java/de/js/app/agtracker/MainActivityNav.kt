@@ -38,6 +38,8 @@ import de.js.app.agtracker.util.KalmanLatLong
 import de.js.app.agtracker.util.UncaughtExceptionHandler
 
 
+private const val TAG = "MainActivityNav"
+
 class MainActivityNav : AppCompatActivity() {
     private var mPreferences: SharedPreferences? = null
     private var currentSpeed: Float = 0.0f
@@ -58,6 +60,8 @@ class MainActivityNav : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        Log.d(TAG, "onCreate()")
 
         // set default exception handler
         Thread.setDefaultUncaughtExceptionHandler(
@@ -95,7 +99,6 @@ class MainActivityNav : AppCompatActivity() {
         // menu should be considered as top level destinations.
         appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.nav_home,
                 R.id.nav_track_point,
                 R.id.nav_track_area,
                 //R.id.nav_navigation,
