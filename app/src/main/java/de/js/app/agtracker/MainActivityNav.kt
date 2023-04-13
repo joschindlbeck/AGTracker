@@ -71,7 +71,7 @@ class MainActivityNav : AppCompatActivity() {
         )
 
         // set display always on
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
         // get vibrations
         mVibrator = getSystemService(VIBRATOR_SERVICE) as Vibrator
@@ -178,7 +178,7 @@ class MainActivityNav : AppCompatActivity() {
 
         //register for location callbacks
         locationCallback = object : LocationCallback() {
-            override fun onLocationResult(locationResult: LocationResult?) {
+            override fun onLocationResult(locationResult: LocationResult) {
                 locationResult ?: return
                 for (location in locationResult.locations) {
 

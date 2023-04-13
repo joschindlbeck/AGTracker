@@ -81,8 +81,6 @@ class TrackAreaRunningFragment : Fragment(), MainActivityNav.LocationUpdateListe
         supportMapFragment.getMapAsync(this)
 
         return root
-        // Inflate the layout for this fragment
-        //return inflater.inflate(R.layout.fragment_track_area_running, container, false)
     }
 
 
@@ -235,7 +233,7 @@ class TrackAreaRunningFragment : Fragment(), MainActivityNav.LocationUpdateListe
     }
 
     @SuppressLint("MissingPermission")
-    override fun onMapReady(googleMap: GoogleMap?) {
+    override fun onMapReady(googleMap: GoogleMap) {
         if (googleMap == null) {
             Log.e(TrackAreaRunningFragment.javaClass.simpleName, "Error getting google maps")
             return
