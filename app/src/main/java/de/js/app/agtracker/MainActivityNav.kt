@@ -85,7 +85,7 @@ class MainActivityNav : AppCompatActivity() {
         checkPermissions()
 
         // set up Location
-        setup_loaction_provider()
+        setupLocationProvider()
 
         // set up DB
         setup_db()
@@ -95,11 +95,6 @@ class MainActivityNav : AppCompatActivity() {
         setContentView(binding.root)
 
         setSupportActionBar(binding.appBarMainActivityNav.toolbar)
-
-        //binding.appBarMainActivityNav.fab.setOnClickListener { view ->
-        //    Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-        //        .setAction("Action", null).show()
-        //}
         val drawerLayout: DrawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.navView
         val navController = findNavController(R.id.nav_host_fragment_content_main_activity_nav)
@@ -133,7 +128,8 @@ class MainActivityNav : AppCompatActivity() {
         )
     }
 
-    private fun setup_loaction_provider() {
+    @SuppressLint("MissingPermission")
+    private fun setupLocationProvider() {
         // get last known location
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
@@ -146,36 +142,19 @@ class MainActivityNav : AppCompatActivity() {
             val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
             startActivity(intent)
         } else {
-            Dexter.withContext(this).withPermissions(
-                android.Manifest.permission.ACCESS_FINE_LOCATION,
-                android.Manifest.permission.ACCESS_COARSE_LOCATION
-            ).withListener(object : MultiplePermissionsListener {
-                @SuppressLint("MissingPermission")
-                override fun onPermissionsChecked(p0: MultiplePermissionsReport?) {
-                    if (p0!!.areAllPermissionsGranted()) {
-                        mFusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
-                            // Got last known location. In some rare situations this can be null.
-                            if (location != null) {
-                                startLocationUpdates()
-                            } else {
-                                //rare situation
-                                Log.e(
-                                    this.javaClass.simpleName,
-                                    "Error getting last location, null!"
-                                )
-                            }
-
-                        }
-                    }
+            mFusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
+                // Got last known location. In some rare situations this can be null.
+                if (location != null) {
+                    startLocationUpdates()
+                } else {
+                    //rare situation
+                    Log.e(
+                        this.javaClass.simpleName,
+                        "Error getting last location, null!"
+                    )
                 }
 
-                override fun onPermissionRationaleShouldBeShown(
-                    p0: MutableList<PermissionRequest>?, p1: PermissionToken?
-                ) {
-                    showRationaleDialogForPermissions()
-                }
-
-            }).onSameThread().check()
+            }
         }
 
         //register for location callbacks
@@ -237,7 +216,6 @@ class MainActivityNav : AppCompatActivity() {
                     }
                 }
             }
-
             override fun onPermissionRationaleShouldBeShown(
                 p0: MutableList<PermissionRequest>?, p1: PermissionToken?
             ) {

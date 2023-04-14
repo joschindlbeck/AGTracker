@@ -165,9 +165,12 @@
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/map"
-            class="com.google.android.gms.maps.SupportMapFragment"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="4" />
+            android:layout_weight="4"
+            xmlns:tools="http://schemas.android.com/tools"
+            tools:context=".MainActivityNav"
+            />
     </LinearLayout>
 </FrameLayout>
