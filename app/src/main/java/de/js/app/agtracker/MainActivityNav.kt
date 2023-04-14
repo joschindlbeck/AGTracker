@@ -33,6 +33,7 @@ import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import de.js.app.agtracker.database.SpatialiteHandler
 import de.js.app.agtracker.databinding.ActivityMainNavBinding
+import de.js.app.agtracker.location.LocationRepository
 import de.js.app.agtracker.ui.SETTINGS_GPS_FILTER_ON
 import de.js.app.agtracker.ui.SETTINGS_GPS_MIN_ACCURACY
 import de.js.app.agtracker.util.BluetoothUtil
@@ -85,7 +86,8 @@ class MainActivityNav : AppCompatActivity() {
         checkPermissions()
 
         // set up Location
-        setupLocationProvider()
+        //setupLocationProvider()
+        setupLocation2()
 
         // set up DB
         setup_db()
@@ -371,12 +373,12 @@ class MainActivityNav : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         mPreferences = PreferenceManager.getDefaultSharedPreferences(this)
-        if (requestingLocationUpdates) startLocationUpdates()
+        //if (requestingLocationUpdates) startLocationUpdates()
     }
 
     override fun onPause() {
         super.onPause()
-        stopLocationUpdates()
+        //stopLocationUpdates()
     }
 
     fun registerForLocationUpdates(listener: LocationUpdateListener) {
@@ -391,5 +393,16 @@ class MainActivityNav : AppCompatActivity() {
         fun onLocationUpdate(location: Location, isQualityGood: Boolean)
     }
 
+    fun setupLocation2(){
+        val repository = LocationRepository()
+        repository.registerForLocationUpdatesFromFusedLocationProvider(this,object: LocationRepository.AgTrackerLocationUpdateListener{
+            override fun onLocationUpdate(location: Location, isQualityGood: Boolean) {
+                Log.d("Location2", "Location: ${location.latitude}, ${location.longitude}")
+                mLocationUpdateListeners.forEach {
+                    it.onLocationUpdate(location, isQualityGood)
+                }
+            }
+        })
+    }
 
 }
