@@ -7,8 +7,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import de.js.app.agtracker.MainActivityNav
 import de.js.app.agtracker.R
+import de.js.app.agtracker.databinding.ItemPlaceBinding
 import de.js.app.agtracker.models.TrackedPlaceModel
-import kotlinx.android.synthetic.main.item_place.view.*
 
 open class PlacesAdapter(
     private val context: Context,
@@ -24,13 +24,8 @@ open class PlacesAdapter(
      * benötigt werden.
      */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return MyViewHolder(
-            LayoutInflater.from(context).inflate(
-                R.layout.item_place,
-                parent,
-                false
-            )
-        )
+        val binding = ItemPlaceBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return MyViewHolder(binding)
     }
 
     /**
@@ -49,15 +44,15 @@ open class PlacesAdapter(
         if (holder is MyViewHolder) {
             //holder.itemView.iv_place_image.setImageURI(Uri.parse(model.image))
 
-            holder.itemView.tvField.text = model.field_name
-            holder.itemView.tvName.text = model.name
-            holder.itemView.tvDate.text = model.date
+            holder.binding.tvField.text = model.field_name
+            holder.binding.tvName.text = model.name
+            holder.binding.tvDate.text = model.date
             //holder.itemView.tvDate.text = DateTimeFormatter.ISO_INSTANT.format(DateTime(model.date))
-            holder.itemView.tvLat.text = String.format("%.6f", model.latitude)
-            holder.itemView.tvLong.text = String.format("%.6f", model.longitude)
+            holder.binding.tvLat.text = String.format("%.6f", model.latitude)
+            holder.binding.tvLong.text = String.format("%.6f", model.longitude)
 
             //set onClickListener for button
-            holder.itemView.btnViewOnMap.setOnClickListener {
+            holder.binding.btnViewOnMap.setOnClickListener {
                 if (onClickListener != null) {
                     onClickListener!!.onClick(position, model)
                 }
@@ -88,7 +83,7 @@ open class PlacesAdapter(
      * ViewHolder beschreibt eine Item-Ansicht und enthält Metadaten über die Platzierung im
      * RecyclerView.
      */
-    private class MyViewHolder(view: View) : RecyclerView.ViewHolder(view)
+    class MyViewHolder(val binding: ItemPlaceBinding) : RecyclerView.ViewHolder(binding.root)
     interface OnClickListener {
         fun onClick(position: Int, model: TrackedPlaceModel)
     }

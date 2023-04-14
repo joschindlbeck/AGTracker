@@ -7,6 +7,8 @@
     -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
@@ -17,13 +19,17 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AGTracker">
         <activity
+            android:name=".HomeActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivityNav"
+            android:exported="true"
             android:label="@string/title_activity_main_nav"
-            android:theme="@style/Theme.AGTracker.NoActionBar"
-            android:exported="true">
+            android:theme="@style/Theme.AGTracker.NoActionBar">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
     </application>

@@ -16,6 +16,7 @@ import android.view.Menu
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -34,6 +35,7 @@ import de.js.app.agtracker.database.SpatialiteHandler
 import de.js.app.agtracker.databinding.ActivityMainNavBinding
 import de.js.app.agtracker.ui.SETTINGS_GPS_FILTER_ON
 import de.js.app.agtracker.ui.SETTINGS_GPS_MIN_ACCURACY
+import de.js.app.agtracker.util.BluetoothUtil
 import de.js.app.agtracker.util.KalmanLatLong
 import de.js.app.agtracker.util.UncaughtExceptionHandler
 
@@ -75,6 +77,12 @@ class MainActivityNav : AppCompatActivity() {
 
         // get vibrations
         mVibrator = getSystemService(VIBRATOR_SERVICE) as Vibrator
+
+        // init Bluetooth
+        BluetoothUtil.initBluetoothWithLibrary(this)
+
+        // check permissons
+        checkPermissions()
 
         // set up Location
         setup_loaction_provider()
@@ -120,8 +128,9 @@ class MainActivityNav : AppCompatActivity() {
     private fun isLocationEnabled(): Boolean {
         val locationManager: LocationManager =
             getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
-                locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(
+            LocationManager.NETWORK_PROVIDER
+        )
     }
 
     private fun setup_loaction_provider() {
@@ -131,49 +140,42 @@ class MainActivityNav : AppCompatActivity() {
         // check permissiona
         if (!isLocationEnabled()) {
             Toast.makeText(
-                this,
-                "Deine Ortung ist ausgeschaltet. Bitte stelle diese an.",
-                Toast.LENGTH_LONG
+                this, "Deine Ortung ist ausgeschaltet. Bitte stelle diese an.", Toast.LENGTH_LONG
             ).show()
 
             val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
             startActivity(intent)
         } else {
-            Dexter.withContext(this)
-                .withPermissions(
-                    android.Manifest.permission.ACCESS_FINE_LOCATION,
-                    android.Manifest.permission.ACCESS_COARSE_LOCATION
-                )
-                .withListener(object : MultiplePermissionsListener {
-                    @SuppressLint("MissingPermission")
-                    override fun onPermissionsChecked(p0: MultiplePermissionsReport?) {
-                        if (p0!!.areAllPermissionsGranted()) {
-                            mFusedLocationClient.lastLocation
-                                .addOnSuccessListener { location: Location? ->
-                                    // Got last known location. In some rare situations this can be null.
-                                    if (location != null) {
-                                        startLocationUpdates()
-                                    } else {
-                                        //rare situation
-                                        Log.e(
-                                            this.javaClass.simpleName,
-                                            "Error getting last location, null!"
-                                        )
-                                    }
+            Dexter.withContext(this).withPermissions(
+                android.Manifest.permission.ACCESS_FINE_LOCATION,
+                android.Manifest.permission.ACCESS_COARSE_LOCATION
+            ).withListener(object : MultiplePermissionsListener {
+                @SuppressLint("MissingPermission")
+                override fun onPermissionsChecked(p0: MultiplePermissionsReport?) {
+                    if (p0!!.areAllPermissionsGranted()) {
+                        mFusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
+                            // Got last known location. In some rare situations this can be null.
+                            if (location != null) {
+                                startLocationUpdates()
+                            } else {
+                                //rare situation
+                                Log.e(
+                                    this.javaClass.simpleName,
+                                    "Error getting last location, null!"
+                                )
+                            }
 
-                                }
                         }
                     }
-
-                    override fun onPermissionRationaleShouldBeShown(
-                        p0: MutableList<PermissionRequest>?,
-                        p1: PermissionToken?
-                    ) {
-                        showRationaleDialogForPermissions()
-                    }
-
                 }
-                ).onSameThread().check()
+
+                override fun onPermissionRationaleShouldBeShown(
+                    p0: MutableList<PermissionRequest>?, p1: PermissionToken?
+                ) {
+                    showRationaleDialogForPermissions()
+                }
+
+            }).onSameThread().check()
         }
 
         //register for location callbacks
@@ -200,6 +202,52 @@ class MainActivityNav : AppCompatActivity() {
         }
     }
 
+    private fun checkPermissions() {
+        Dexter.withContext(this).withPermissions(
+            android.Manifest.permission.ACCESS_FINE_LOCATION,
+            android.Manifest.permission.ACCESS_COARSE_LOCATION,
+            android.Manifest.permission.BLUETOOTH,
+            android.Manifest.permission.BLUETOOTH_CONNECT,
+        ).withListener(object : MultiplePermissionsListener {
+            @SuppressLint("MissingPermission")
+            override fun onPermissionsChecked(p0: MultiplePermissionsReport?) {
+                if (p0!!.areAllPermissionsGranted()) {
+                    // all permissions have been granted, cool!
+                } else {
+                    // request permissions again
+                    //showRationaleDialogForPermissions()
+                    ActivityCompat.requestPermissions(
+                        this@MainActivityNav,
+                        arrayOf(
+                            android.Manifest.permission.ACCESS_FINE_LOCATION,
+                            android.Manifest.permission.ACCESS_COARSE_LOCATION,
+                            android.Manifest.permission.BLUETOOTH,
+                            android.Manifest.permission.BLUETOOTH_CONNECT,
+                        ), 1)
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        requestPermissions(
+                            arrayOf(
+                                android.Manifest.permission.ACCESS_FINE_LOCATION,
+                                android.Manifest.permission.ACCESS_COARSE_LOCATION,
+                                android.Manifest.permission.BLUETOOTH,
+                                android.Manifest.permission.BLUETOOTH_CONNECT,
+                            ), 1
+                        )
+                    }
+                }
+            }
+
+            override fun onPermissionRationaleShouldBeShown(
+                p0: MutableList<PermissionRequest>?, p1: PermissionToken?
+            ) {
+                showRationaleDialogForPermissions()
+            }
+
+        }).onSameThread().check()
+    }
+
+
     @SuppressLint("MissingPermission")
     private fun startLocationUpdates() {
         val locationRequest: LocationRequest = LocationRequest()
@@ -207,9 +255,7 @@ class MainActivityNav : AppCompatActivity() {
         locationRequest.setInterval(1000) // 1 seconds
 
         mFusedLocationClient.requestLocationUpdates(
-            locationRequest,
-            locationCallback,
-            Looper.getMainLooper()
+            locationRequest, locationCallback, Looper.getMainLooper()
         )
         runStartTimeInMillis = SystemClock.elapsedRealtimeNanos() / 1000000
     }
@@ -266,11 +312,7 @@ class MainActivityNav : AppCompatActivity() {
         }
 
         kalmanFilter.Process(
-            location.latitude,
-            location.longitude,
-            location.accuracy,
-            elapsedTimeInMillis,
-            Qvalue
+            location.latitude, location.longitude, location.accuracy, elapsedTimeInMillis, Qvalue
         )
         val predictedLat: Double = kalmanFilter.get_lat()
         val predictedLng: Double = kalmanFilter.get_lng()
@@ -333,22 +375,19 @@ class MainActivityNav : AppCompatActivity() {
 
     private fun showRationaleDialogForPermissions() {
         AlertDialog.Builder(this).setMessage(
-            "Es liegen keine Berechtigungen vor. Diese können in den " +
-                    "App-Einstellungen geändert werden."
-        )
-            .setPositiveButton("Zu den Einstellungen") { _, _ ->
-                try {
-                    val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-                    val uri = Uri.fromParts("package", packageName, null)
-                    intent.data = uri
-                    startActivity(intent)
-                } catch (e: ActivityNotFoundException) {
-                    e.printStackTrace()
-                }
+            "Es liegen keine Berechtigungen vor. Diese können in den " + "App-Einstellungen geändert werden."
+        ).setPositiveButton("Zu den Einstellungen") { _, _ ->
+            try {
+                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                val uri = Uri.fromParts("package", packageName, null)
+                intent.data = uri
+                startActivity(intent)
+            } catch (e: ActivityNotFoundException) {
+                e.printStackTrace()
             }
-            .setNegativeButton("Abbrechen") { dialog, _ ->
-                dialog.dismiss()
-            }.show()
+        }.setNegativeButton("Abbrechen") { dialog, _ ->
+            dialog.dismiss()
+        }.show()
     }
 
     override fun onResume() {
@@ -374,19 +413,5 @@ class MainActivityNav : AppCompatActivity() {
         fun onLocationUpdate(location: Location, isQualityGood: Boolean)
     }
 
-    override fun onBackPressed() {
-        super.onBackPressed()
 
-    }
-
-    fun getButtonTextsFromPreferences(): List<String> {
-        // get Texts for buttons from Settings, ids are btn1, btn2, ..., btn8
-        var btnNo: Int = 0
-        var textList: MutableList<String> = mutableListOf()
-        for (btnNo in 1..8 step 1) {
-            var settingsId: String = "btn$btnNo"
-            mPreferences?.getString(settingsId, "")?.let { textList.add(it) }
-        }
-        return textList
-    }
 }

@@ -22,6 +22,7 @@ import com.github.douglasjunior.bluetoothclassiclibrary.BluetoothStatus
 import com.google.android.gms.maps.model.LatLng
 import de.js.app.agtracker.MainActivityNav
 import de.js.app.agtracker.R
+import de.js.app.agtracker.util.BluetoothUtil
 import java.util.*
 
 private const val TAG = "RtkServiceWorker"
@@ -147,20 +148,7 @@ class RtkServiceWorker (context: Context, workerParams: WorkerParameters) : Work
     }
 
     private fun initBluetoothWithLibrary() {
-        if (Looper.myLooper() == null) {
-            Looper.prepare()
-        }
-
-        //Bluetooth config
-        val config = BluetoothConfiguration()
-        config.context = applicationContext
-        config.bluetoothServiceClass = BluetoothClassicService::class.java
-        config.bufferSize = 1024
-        config.characterDelimiter = '\n'
-        config.deviceName = BLUETOOTH_CONFIG_DEVICE_NAME
-        config.callListenersInMainThread = false//true
-        config.uuid = UUID.fromString("00001101-0000-1000-8000-00805f9b34fb") // Required
-        BluetoothService.init(config)
+        BluetoothUtil.initBluetoothWithLibrary(applicationContext)
     }
 
     @SuppressLint("MissingPermission")

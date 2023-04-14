@@ -34,4 +34,8 @@
     <string name="pref_btns">Buttons</string>
     <string name="rtk_notification_title">RTK Service</string>
     <string name="rtk_notification_text">Location Service via RTK</string>
+    <string name="pref_ntrip">NTRIP settings</string>
+    <string name="pref_ntrip_bluetooth">Bluetooth Settings</string>
+    <string name="bluetooth_device">RTK Bluetooth Device</string>
+    <string name="pref_ntrip_settings">NTRIP Settings</string>
 </resources>

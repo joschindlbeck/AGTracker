@@ -16,6 +16,55 @@
             app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
 
+    <PreferenceCategory android:title="@string/pref_ntrip_bluetooth">
+        <ListPreference
+            android:defaultValue="0"
+            android:key="bluetooth_device"
+            android:title="@string/bluetooth_device"
+            app:isPreferenceVisible="true"
+            app:useSimpleSummaryProvider="true" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/pref_ntrip_settings">
+        <EditTextPreference
+            android:key="ntrip_username"
+            android:title="NTRIP Username"
+            app:isPreferenceVisible="true"
+            app:useSimpleSummaryProvider="true"
+            android:summary="User name for your Provider"
+            android:defaultValue="username"/>
+        <EditTextPreference
+            android:key="ntrip_password"
+            android:title="NTRIP Password"
+            app:isPreferenceVisible="true"
+            app:useSimpleSummaryProvider="true"
+            android:summary="Password"
+            android:defaultValue="password"
+            android:inputType="textPassword" />
+            />
+        <EditTextPreference
+            android:defaultValue="0"
+            android:key="ntrip_mountpoint"
+            android:title="NTRIP Mointpoint"
+            app:isPreferenceVisible="true"
+            app:useSimpleSummaryProvider="true"
+            android:summary="Mountpoint of your Provider"
+            app:defaultValue="FPS_BY_RTCM3_3G"/>
+        <EditTextPreference
+            android:key="ntrip_server"
+            android:title="NTRIP Server"
+            app:isPreferenceVisible="true"
+            app:useSimpleSummaryProvider="true"
+            android:summary="NTRIP Server"
+            android:defaultValue="195.200.70.200"/>
+        <EditTextPreference
+            android:key="ntrip_port"
+            android:title="NTRIP Port"
+            app:isPreferenceVisible="true"
+            app:useSimpleSummaryProvider="true"
+            android:summary="NTRIP Port"
+            android:defaultValue="2101"
+            android:inputType="number"/>
+    </PreferenceCategory>
     <PreferenceCategory android:title="@string/pref_btns">
         <EditTextPreference
             android:defaultValue="Distel"
@@ -82,39 +131,4 @@
             app:isPreferenceVisible="true"
             app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
-
-    <!--
-    <PreferenceCategory app:title="@string/messages_header">
-
-
-        <EditTextPreference
-            app:key="signature"
-            app:title="@string/signature_title"
-            app:useSimpleSummaryProvider="true" />
-
-        <ListPreference
-            app:defaultValue="reply"
-            app:entries="@array/reply_entries"
-            app:entryValues="@array/reply_values"
-            app:key="reply"
-            app:title="@string/reply_title"
-            app:useSimpleSummaryProvider="true" />
-
-    </PreferenceCategory>
-
-    <PreferenceCategory app:title="@string/sync_header">
-
-        <SwitchPreferenceCompat
-            app:key="sync"
-            app:title="@string/sync_title" />
-
-        <SwitchPreferenceCompat
-            app:dependency="sync"
-            app:key="attachment"
-            app:summaryOff="@string/attachment_summary_off"
-            app:summaryOn="@string/attachment_summary_on"
-            app:title="@string/attachment_title" />
-
-    </PreferenceCategory>
-    -->
 </PreferenceScreen>

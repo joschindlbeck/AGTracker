@@ -25,7 +25,6 @@ import de.js.app.agtracker.R
 import de.js.app.agtracker.databinding.FragmentNavigationBinding
 import de.js.app.agtracker.models.TrackedPlaceModel
 import de.js.app.agtracker.util.CompassUtil
-import kotlinx.android.synthetic.main.fragment_navigation.view.*
 import java.util.*
 
 // TODO: Rename parameter arguments, choose names that match

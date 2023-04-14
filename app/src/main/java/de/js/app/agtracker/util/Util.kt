@@ -1,12 +1,18 @@
 package de.js.app.agtracker.util
 
+import android.Manifest
+import android.app.Activity
 import android.content.Context
+import android.content.pm.PackageManager
 import android.provider.Settings
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import java.io.*
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
+
 
 object Util {
 
@@ -70,5 +76,44 @@ object Util {
         zipOutput.closeEntry()
         zipOutput.close()
 
+    }
+
+    /**
+     * Check if all permissions are granted, if not request them
+     */
+    fun checkAndRequestPermissions(activity: Activity): Boolean {
+        val context = activity.applicationContext
+        val bluetooth = ContextCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH)
+        val bluetooth2 = ContextCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_CONNECT)
+        val storage =
+            ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        val loc =
+            ContextCompat.checkSelfPermission(context , Manifest.permission.ACCESS_COARSE_LOCATION)
+        val loc2 = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
+        val listPermissionsNeeded: MutableList<String> = ArrayList()
+        if (bluetooth != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(Manifest.permission.BLUETOOTH)
+        }
+        if (bluetooth2 != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(Manifest.permission.BLUETOOTH_CONNECT)
+        }
+        if (storage != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        }
+        if (loc2 != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(Manifest.permission.ACCESS_FINE_LOCATION)
+        }
+        if (loc != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(Manifest.permission.ACCESS_COARSE_LOCATION)
+        }
+        if (listPermissionsNeeded.isNotEmpty()) {
+            ActivityCompat.requestPermissions(
+                activity,
+                listPermissionsNeeded.toTypedArray(),
+                1
+            )
+            return false
+        }
+        return true
     }
 }

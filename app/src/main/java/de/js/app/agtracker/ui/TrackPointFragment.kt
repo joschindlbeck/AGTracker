@@ -17,6 +17,7 @@ import com.google.maps.android.SphericalUtil
 import de.js.app.agtracker.MainActivityNav
 import de.js.app.agtracker.databinding.FragmentTrackPointBinding
 import de.js.app.agtracker.models.TrackedPlaceModel
+import de.js.app.agtracker.util.PreferencesUtil
 import de.js.app.agtracker.util.Util
 
 // TODO: Rename parameter arguments, choose names that match
@@ -64,8 +65,7 @@ class TrackPointFragment : Fragment(), MainActivityNav.LocationUpdateListener {
         val root: View = binding.root
 
         // set text from preferences
-        val mainActivity = activity as MainActivityNav
-        val btnTexts: List<String> = mainActivity.getButtonTextsFromPreferences()
+        val btnTexts: List<String> = PreferencesUtil.getButtonTextsFromPreferences(requireContext())
         if(btnTexts.size == 8 ) {
             binding.btnTrack1.text = btnTexts[0]
             binding.btnTrack2.text = btnTexts[1]

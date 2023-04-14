@@ -11,6 +11,7 @@ import androidx.navigation.fragment.findNavController
 import de.js.app.agtracker.MainActivityNav
 import de.js.app.agtracker.R
 import de.js.app.agtracker.databinding.FragmentTrackAreaBinding
+import de.js.app.agtracker.util.PreferencesUtil
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -49,8 +50,7 @@ class TrackAreaFragement : Fragment() {
         val root: View = binding.root
 
         // set text from preferences
-        val mainActivity = activity as MainActivityNav
-        val btnTexts: List<String> = mainActivity.getButtonTextsFromPreferences()
+        val btnTexts: List<String> = PreferencesUtil.getButtonTextsFromPreferences(requireContext())
         binding.btnTrack1.text = btnTexts[0]
         binding.btnTrack2.text = btnTexts[1]
         binding.btnTrack3.text = btnTexts[2]
