@@ -10,13 +10,10 @@ import android.content.Context
 import android.content.Intent
 import android.location.Location
 import android.os.Build
-import android.os.Looper
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.work.*
-import com.github.douglasjunior.bluetoothclassiclibrary.BluetoothClassicService
-import com.github.douglasjunior.bluetoothclassiclibrary.BluetoothConfiguration
 import com.github.douglasjunior.bluetoothclassiclibrary.BluetoothService
 import com.github.douglasjunior.bluetoothclassiclibrary.BluetoothStatus
 import com.google.android.gms.maps.model.LatLng
@@ -27,9 +24,9 @@ import java.util.*
 
 private const val TAG = "RtkServiceWorker"
 
-class RtkServiceWorker (context: Context, workerParams: WorkerParameters) : Worker(
+class RtkServiceWorker(context: Context, workerParams: WorkerParameters) : Worker(
     context, workerParams
-), MyNtripClient.OnDataReceivedListener,BluetoothService.OnBluetoothEventCallback {
+), MyNtripClient.OnDataReceivedListener, BluetoothService.OnBluetoothEventCallback {
     companion object {
         const val UNIQUE_WORK_ID = "RtkServiceWorker"
         const val NOTIFICATION_CHANNEL_ID = "RtkServiceWorker"
@@ -42,32 +39,66 @@ class RtkServiceWorker (context: Context, workerParams: WorkerParameters) : Work
         /**
          * Convert GGA Location to LatLng
          */
-        fun convertGgaLocationToLatLng(ggaLat: String, ggaNS: String,ggaLon: String, ggaEW: String): LatLng {
+        @Throws(IndexOutOfBoundsException::class)
+        fun convertGgaLocationToLatLng(
+            ggaLat: String,
+            ggaNS: String,
+            ggaLon: String,
+            ggaEW: String
+        ): LatLng {
 
-            try {
-                //Latitude
-                var latString = ggaLat.substring(0, 2) + ":" + ggaLat.substring(2) //[+-]DD:MM.MMMMM
-                if (ggaNS == "S") {
-                    latString = "-$latString"
-                }
-                val lat = Location.convert(latString)
+            //Latitude
+            var latString = ggaLat.substring(0, 2) + ":" + ggaLat.substring(2) //[+-]DD:MM.MMMMM
+            if (ggaNS == "S") {
+                latString = "-$latString"
+            }
+            val lat = Location.convert(latString)
 
-                //Longitude
-                var lonString = ggaLon.substring(0, 3) + ":" + ggaLon.substring(3) //[+-]DDD:MM.MMMMM
-                if (ggaEW == "W") {
-                    lonString = "-$lonString"
-                }
-                val lon = Location.convert(lonString)
-                return LatLng(lat, lon)
-            }catch (IndexOutOfBoundsException: Exception){
-                Log.e(TAG,  "Error converting location to decimals")
-                return LatLng(0.0, 0.0)
+            //Longitude
+            var lonString = ggaLon.substring(0, 3) + ":" + ggaLon.substring(3) //[+-]DDD:MM.MMMMM
+            if (ggaEW == "W") {
+                lonString = "-$lonString"
+            }
+            val lon = Location.convert(lonString)
+            return LatLng(lat, lon)
+        }
+
+        fun getFixTypeFromGGA(gga: String): GpsFixTypeEnum {
+            val ggaSplit = gga.split(",")
+            return when (ggaSplit[6].toInt()) {
+                0 -> GpsFixTypeEnum.NO_FIX
+                1 -> GpsFixTypeEnum.GPS
+                2 -> GpsFixTypeEnum.DGPS
+                3 -> GpsFixTypeEnum.PPS
+                4 -> GpsFixTypeEnum.RTK
+                5 -> GpsFixTypeEnum.RTK_FLOAT
+                6 -> GpsFixTypeEnum.EST
+                7 -> GpsFixTypeEnum.MANUAL
+                8 -> GpsFixTypeEnum.SIMULATION
+                9 -> GpsFixTypeEnum.WAAS
+                else -> GpsFixTypeEnum.NO_FIX
             }
         }
 
+        fun getImageForFixType(fixType: GpsFixTypeEnum): Int {
+            return when (fixType) {
+                GpsFixTypeEnum.NO_FIX -> R.drawable.ic_fix_none_24
+                GpsFixTypeEnum.GPS -> R.drawable.ic_fix_gps_24
+                GpsFixTypeEnum.DGPS -> R.drawable.ic_fix_gps_24
+                GpsFixTypeEnum.PPS -> R.drawable.ic_fix_unknown_24
+                GpsFixTypeEnum.RTK -> R.drawable.ic_fix_rtk_24
+                GpsFixTypeEnum.RTK_FLOAT -> R.drawable.ic_fix_rtk_float_24
+                GpsFixTypeEnum.EST -> R.drawable.ic_fix_unknown_24
+                GpsFixTypeEnum.MANUAL -> R.drawable.ic_fix_unknown_24
+                GpsFixTypeEnum.SIMULATION -> R.drawable.ic_fix_unknown_24
+                GpsFixTypeEnum.WAAS -> R.drawable.ic_fix_unknown_24
+            }
+        }
     }
 
+
     private var lastGGA: String = ""
+    private var lastGGAFixType: GpsFixTypeEnum = GpsFixTypeEnum.NO_FIX
 
     @SuppressLint("MissingPermission")
     override fun doWork(): Result {
@@ -102,6 +133,10 @@ class RtkServiceWorker (context: Context, workerParams: WorkerParameters) : Work
                 ntripClient.setGGA(lastGGA)
                 ntripClient.call()
             }
+
+            //update notification
+            setForegroundAsync(foregroundInfo)
+            // sleep
             Thread.sleep(ntripDelay)
         }
 
@@ -119,16 +154,22 @@ class RtkServiceWorker (context: Context, workerParams: WorkerParameters) : Work
 
 
         val notification =
-            NotificationCompat.Builder(applicationContext, NOTIFICATION_CHANNEL_ID).setContentTitle(applicationContext.getString(R.string.rtk_notification_title))
+            NotificationCompat.Builder(applicationContext, NOTIFICATION_CHANNEL_ID)
+                .setContentTitle(applicationContext.getString(R.string.rtk_notification_title))
                 .setContentText(applicationContext.getString(R.string.rtk_notification_text))
-                .setSmallIcon(R.drawable.ic_launcher_foreground).setContentIntent(pendingIntent) //TODO: change icon
+                .setSmallIcon(getImageForFixType(lastGGAFixType))
+                .setContentIntent(pendingIntent)
                 .setPriority(NotificationCompat.PRIORITY_LOW).build()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notificationManager =
                 applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             val channel =
-                NotificationChannel(NOTIFICATION_CHANNEL_ID, NOTIFICATION_CHANNEL_NAME, NotificationManager.IMPORTANCE_LOW)
+                NotificationChannel(
+                    NOTIFICATION_CHANNEL_ID,
+                    NOTIFICATION_CHANNEL_NAME,
+                    NotificationManager.IMPORTANCE_LOW
+                )
             notificationManager.createNotificationChannel(channel)
         }
 
@@ -173,8 +214,9 @@ class RtkServiceWorker (context: Context, workerParams: WorkerParameters) : Work
 
         return true
     }
+
     override fun onDataRead(buffer: ByteArray?, length: Int) {
-        Log.d(TAG, "Data received from BluetoothDevice: buffer = $buffer, length = $length")
+        //Log.d(TAG, "Data received from BluetoothDevice: buffer = $buffer, length = $length")
         val message = String(buffer!!, 0, length)
         val messageParts = message.split(",")
         // get sentence
@@ -188,16 +230,31 @@ class RtkServiceWorker (context: Context, workerParams: WorkerParameters) : Work
             lastGGA = message
             val fixType = messageParts[6].toInt()
             setProgressAsync(workDataOf("fixType" to fixType))
-            Log.d(TAG, "Store GGA for NTRIP to progress: $lastGGA")
-            val latLng = convertGgaLocationToLatLng(messageParts[2], messageParts[3], messageParts[4], messageParts[5])
-            Log.i(TAG, "latLng: ${latLng.latitude}, ${latLng.longitude}")
-            setProgressAsync(
-                workDataOf("gga" to lastGGA,
-                    "latitude" to latLng.latitude,
-                    "longitude" to latLng.longitude,
-                    "numSatellites" to messageParts[7].toInt(),
-                    "sentence" to sentence)
-            )
+            //Log.d(TAG, "Store GGA for NTRIP to progress: $lastGGA")
+            try {
+                val latLng = convertGgaLocationToLatLng(
+                    messageParts[2],
+                    messageParts[3],
+                    messageParts[4],
+                    messageParts[5]
+                )
+                Log.i(TAG, "latLng: ${latLng.latitude}, ${latLng.longitude}")
+                setProgressAsync(
+                    workDataOf(
+                        "gga" to lastGGA,
+                        "latitude" to latLng.latitude,
+                        "longitude" to latLng.longitude,
+                        "numSatellites" to messageParts[7].toInt(),
+                        "sentence" to sentence
+                    )
+                )
+            } catch (e: Exception) {
+                Log.e(TAG, "Error converting GGA to LatLng: ${e.message}")
+            }
+
+            // extract FixType
+            Log.d(TAG, "FixType: $fixType")
+            lastGGAFixType = getFixTypeFromGGA(message)
 
 
         }
@@ -207,8 +264,10 @@ class RtkServiceWorker (context: Context, workerParams: WorkerParameters) : Work
             val accuracy = messageParts[2].toFloat()
             Log.d(TAG, "accuracy: $accuracy")
             setProgressAsync(
-                workDataOf("accuracy" to accuracy,
-                    "sentence" to sentence)
+                workDataOf(
+                    "accuracy" to accuracy,
+                    "sentence" to sentence
+                )
             )
         }
     }
@@ -236,4 +295,17 @@ class RtkServiceWorker (context: Context, workerParams: WorkerParameters) : Work
         btService.write(data)
     }
 
+}
+
+enum class GpsFixTypeEnum(val value: Int) {
+    NO_FIX(0),  // Invalid, no position available
+    GPS(1), // Autonomous GPS fix, no correction data used.
+    DGPS(2), //DGPS fix, using a local DGPS base station or correction service such as WAAS or EGNOS.
+    PPS(3), // PPS fix, I’ve never seen this used.
+    RTK(4), // RTK fix, high accuracy Real Time Kinematic.
+    RTK_FLOAT(5), // RTK Float, better than DGPS, but not quite RTK.
+    EST(6), //Estimated fix (dead reckoning).
+    MANUAL(7), // Manual input mode.
+    SIMULATION(8), // Simulation mode.
+    WAAS(9) //WAAS fix (not NMEA standard, but NovAtel receivers report this instead of a 2).
 }

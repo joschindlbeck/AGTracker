@@ -24,6 +24,7 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.preference.PreferenceManager
+import androidx.work.*
 import com.google.android.gms.location.*
 import com.google.android.material.navigation.NavigationView
 import com.karumi.dexter.Dexter
@@ -34,10 +35,12 @@ import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import de.js.app.agtracker.database.SpatialiteHandler
 import de.js.app.agtracker.databinding.ActivityMainNavBinding
 import de.js.app.agtracker.location.LocationRepository
+import de.js.app.agtracker.location.RtkServiceWorker
 import de.js.app.agtracker.ui.SETTINGS_GPS_FILTER_ON
 import de.js.app.agtracker.ui.SETTINGS_GPS_MIN_ACCURACY
 import de.js.app.agtracker.util.BluetoothUtil
 import de.js.app.agtracker.util.KalmanLatLong
+import de.js.app.agtracker.util.PreferencesUtil
 import de.js.app.agtracker.util.UncaughtExceptionHandler
 
 
@@ -204,7 +207,8 @@ class MainActivityNav : AppCompatActivity() {
                             android.Manifest.permission.ACCESS_COARSE_LOCATION,
                             android.Manifest.permission.BLUETOOTH,
                             android.Manifest.permission.BLUETOOTH_CONNECT,
-                        ), 1)
+                        ), 1
+                    )
 
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                         requestPermissions(
@@ -218,6 +222,7 @@ class MainActivityNav : AppCompatActivity() {
                     }
                 }
             }
+
             override fun onPermissionRationaleShouldBeShown(
                 p0: MutableList<PermissionRequest>?, p1: PermissionToken?
             ) {
@@ -393,16 +398,78 @@ class MainActivityNav : AppCompatActivity() {
         fun onLocationUpdate(location: Location, isQualityGood: Boolean)
     }
 
-    fun setupLocation2(){
-        val repository = LocationRepository()
-        repository.registerForLocationUpdatesFromFusedLocationProvider(this,object: LocationRepository.AgTrackerLocationUpdateListener{
-            override fun onLocationUpdate(location: Location, isQualityGood: Boolean) {
-                Log.d("Location2", "Location: ${location.latitude}, ${location.longitude}")
-                mLocationUpdateListeners.forEach {
-                    it.onLocationUpdate(location, isQualityGood)
-                }
+    private fun setupLocation2() {
+        val repository = LocationRepository.getInstance()
+        //Internal GPS or RTK?
+        PreferencesUtil.getGpsSourceFromPreferences(this)?.let { str ->
+            if (str == "GPS") {
+                //Internal GPS
+                Log.d(TAG, "Use internal GPS")
+                repository.registerForLocationUpdatesFromFusedLocationProvider(this,
+                    object : LocationRepository.AgTrackerLocationUpdateListener {
+                        override fun onLocationUpdate(location: Location, isQualityGood: Boolean) {
+                            Log.d(
+                                "Location2",
+                                "Location: ${location.latitude}, ${location.longitude}"
+                            )
+                            mLocationUpdateListeners.forEach {
+                                it.onLocationUpdate(location, isQualityGood)
+                            }
+                        }
+                    })
+            } else {
+                //RTK
+                Log.d(TAG, "Use RTK")
+                startWorker()
+                Log.d(TAG, "Worker started")
+                repository.registerForLocationUpdatesFromRtkServiceWorker(this,
+                    object : LocationRepository.AgTrackerLocationUpdateListener {
+                        override fun onLocationUpdate(location: Location, isQualityGood: Boolean) {
+                            Log.d(
+                                "Location2",
+                                "Location: ${location.latitude}, ${location.longitude}"
+                            )
+                            mLocationUpdateListeners.forEach {
+                                it.onLocationUpdate(location, isQualityGood)
+                            }
+                        }
+                    })
             }
-        })
+        }
+
+
+    }
+    private fun startWorker() {
+        //Start Worker
+        val constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
+        val data = PreferencesUtil.getWorkerInputDataFromPreferences(this)
+        val worker = OneTimeWorkRequest.Builder(RtkServiceWorker::class.java)
+            .setConstraints(constraints)
+            .setInputData(data)
+            .setExpedited(OutOfQuotaPolicy.DROP_WORK_REQUEST)
+            .addTag(RtkServiceWorker.UNIQUE_WORK_ID)
+            .build()
+        val wm = WorkManager.getInstance(this)
+        // Cancel jobs that are running
+        stopWorker()
+        // Start new job
+        wm.beginUniqueWork(
+            RtkServiceWorker.UNIQUE_WORK_ID,
+            ExistingWorkPolicy.REPLACE,
+            worker
+        ).enqueue()
     }
 
+    private fun stopWorker() {
+        val wm = WorkManager.getInstance(this)
+        wm.cancelUniqueWork(RtkServiceWorker.UNIQUE_WORK_ID)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        stopWorker()
+
+    }
 }

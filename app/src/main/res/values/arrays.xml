@@ -9,4 +9,15 @@
         <item>reply</item>
         <item>reply_all</item>
     </string-array>
+
+    <!-- GPS Source Preference -->
+    <string-array name="gps_source_entries">
+        <item>Internal GPS</item>
+        <item>RTK Device via Bluetooth</item>
+    </string-array>
+    <!-- GPS Source Preference -->
+    <string-array name="gps_source_entryValues">
+        <item>GPS</item>
+        <item>RTK</item>
+    </string-array>
 </resources>

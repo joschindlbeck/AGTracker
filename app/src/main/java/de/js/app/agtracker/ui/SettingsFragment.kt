@@ -61,7 +61,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         ) as ListPreference
         val mapDevices = mutableMapOf<String, String>()
         BluetoothAdapter.getDefaultAdapter()?.bondedDevices?.forEach {
-            mapDevices[it.address] = it.name
+            mapDevices[it.name] = it.name
         }
         bluetoothDevicePref.entries = mapDevices.values.toTypedArray()
         bluetoothDevicePref.entryValues = mapDevices.keys.toTypedArray()

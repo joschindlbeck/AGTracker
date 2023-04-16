@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -21,6 +22,7 @@ import com.google.android.gms.maps.model.PolylineOptions
 import de.js.app.agtracker.MainActivityNav
 import de.js.app.agtracker.R
 import de.js.app.agtracker.databinding.FragmentTrackAreaRunningBinding
+import de.js.app.agtracker.location.LocationRepository
 import de.js.app.agtracker.models.TrackedPlaceModel
 import de.js.app.agtracker.util.Util
 
@@ -239,7 +241,10 @@ class TrackAreaRunningFragment : Fragment(), MainActivityNav.LocationUpdateListe
             return
         }
         //googleMap.mapType = GoogleMap.MAP_TYPE_SATELLITE
-
+        googleMap.setLocationSource(
+            LocationRepository.getInstance()
+                .getLocationSource(requireActivity() as AppCompatActivity, this)
+        )
         googleMap.isMyLocationEnabled = true
         googleMap.uiSettings.isMyLocationButtonEnabled = true
         googleMap.uiSettings.isCompassEnabled = true

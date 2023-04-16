@@ -14,6 +14,14 @@
             app:isPreferenceVisible="true"
             app:summary="GPS accuracy in Meter e.g. 1.0 "
             app:useSimpleSummaryProvider="true" />
+        <ListPreference
+            android:defaultValue="GPS"
+            android:key="gps_source"
+            android:title="@string/settings_gps_source"
+            app:isPreferenceVisible="true"
+            app:useSimpleSummaryProvider="true"
+            android:entries="@array/gps_source_entries"
+            android:entryValues="@array/gps_source_entryValues"/>
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/pref_ntrip_bluetooth">

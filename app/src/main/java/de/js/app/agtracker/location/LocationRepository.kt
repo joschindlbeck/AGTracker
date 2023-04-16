@@ -1,11 +1,16 @@
 package de.js.app.agtracker.location
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.app.Application
 import android.location.Location
 import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
-import androidx.work.WorkManager
+import androidx.lifecycle.LifecycleOwner
+import androidx.work.*
 import com.google.android.gms.location.*
+import com.google.android.gms.maps.LocationSource
+import de.js.app.agtracker.location.RtkServiceWorker.Companion.UNIQUE_WORK_ID
 
 /**
  * This class is responsible for providing location updates.
@@ -16,13 +21,14 @@ class LocationRepository() : LocationListener {
     private var lastLocation: Location = Location("RTKService").apply {
         latitude = 47.85439864833333; longitude = 11.591493566666665; altitude = 0.0; accuracy = 0f
     }
+    private var useRtk = false
 
     /**
      * Register for location updates from the FusedLocationProviderClient.
      */
     @SuppressLint("MissingPermission")
     fun registerForLocationUpdatesFromFusedLocationProvider(
-        activity: AppCompatActivity,
+        activity: Activity,
         listener: AgTrackerLocationUpdateListener
     ) {
         val fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(activity)
@@ -43,6 +49,8 @@ class LocationRepository() : LocationListener {
                 )
                 // set the listener
                 this.listener = listener
+
+                this.useRtk = false
             }
         }
     }
@@ -51,10 +59,11 @@ class LocationRepository() : LocationListener {
         activity: AppCompatActivity,
         listener: AgTrackerLocationUpdateListener
     ) {
+        this.useRtk = true
         // set the listener
         this.listener = listener
         // register for updates from the RtkServiceWorker
-        WorkManager.getInstance(activity.applicationContext)
+        WorkManager.getInstance(activity)
             .getWorkInfosForUniqueWorkLiveData(RtkServiceWorker.UNIQUE_WORK_ID)
             .observe(activity) { workInfoList ->
                 if (workInfoList != null && workInfoList.size > 0) {
@@ -69,6 +78,7 @@ class LocationRepository() : LocationListener {
                         location.longitude = lon
                         location.altitude = alt
                         location.accuracy = accuracy
+                        location.elapsedRealtimeNanos = System.nanoTime()
                         this.lastLocation = location
 
                         // report to listener
@@ -77,6 +87,20 @@ class LocationRepository() : LocationListener {
 
                 }
             }
+    }
+
+
+    fun getLocationSource(
+        activity: AppCompatActivity,
+        lifecycleOwner: LifecycleOwner
+    ): LocationSource? {
+        if (useRtk) {
+            val locationSource = RtkLocationSource(activity, lifecycleOwner)
+            locationSource.lastLocation = this.lastLocation
+            return locationSource
+        } else {
+            return null
+        }
     }
 
     private fun isQualityGood(location: Location): Boolean {
@@ -94,4 +118,16 @@ class LocationRepository() : LocationListener {
         fun onLocationUpdate(location: Location, isQualityGood: Boolean)
     }
 
+    companion object {
+        private const val TAG = "LocationRepository"
+        // Singleton pattern
+        private var instance: LocationRepository? = null
+        fun getInstance(): LocationRepository {
+            if (instance == null) {
+                instance = LocationRepository()
+            }
+            return instance!!
+        }
+
+    }
 }
