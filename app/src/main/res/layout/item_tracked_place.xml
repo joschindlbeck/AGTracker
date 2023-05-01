@@ -38,9 +38,6 @@
             android:layout_marginStart="@dimen/item_place_ll_margin_start"
             android:layout_marginEnd="@dimen/item_place_ll_margin_end"
             android:orientation="vertical">
-            <TextView android:text="Test: neuer Recycler View"
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"></TextView>
             <TextView
                 android:id="@+id/tvField"
                 android:layout_width="match_parent"
