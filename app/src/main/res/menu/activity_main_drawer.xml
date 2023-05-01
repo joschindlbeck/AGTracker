@@ -17,6 +17,10 @@
             android:icon="@drawable/ic_baseline_list_24"
             android:title="@string/menu_list_tracked_places" />
         <item
+            android:id="@+id/nav_list_tracked_places2"
+            android:icon="@drawable/ic_baseline_list_24"
+            android:title="@string/menu_list_tracked_places2" />
+        <item
             android:id="@+id/navigationInputFragment"
             android:icon="@drawable/ic_baseline_navigation_24"
             android:title="@string/menu_navigate" />

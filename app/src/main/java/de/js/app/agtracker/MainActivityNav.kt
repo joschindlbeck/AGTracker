@@ -114,6 +114,7 @@ class MainActivityNav : AppCompatActivity() {
                 //R.id.nav_navigation,
                 R.id.navigationInputFragment,
                 R.id.nav_list_tracked_places,
+                R.id.nav_list_tracked_places2,
                 R.id.nav_export,
                 R.id.nav_settings
             ), drawerLayout

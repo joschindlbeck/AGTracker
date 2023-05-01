@@ -2,9 +2,10 @@ package de.js.app.agtracker.domain.repository
 
 import com.google.android.gms.maps.model.LatLng
 import de.js.app.agtracker.data.TrackedPlace
+import kotlinx.coroutines.flow.Flow
 
 interface TrackedPlaceRepository {
-    fun getTrackedPlaces(): List<TrackedPlace>
+    fun getTrackedPlaces(): Flow<List<TrackedPlace>>
     fun getTrackedPlace(id: Long): TrackedPlace
 
     fun insertAll(trackedPlaces: List<TrackedPlace>)

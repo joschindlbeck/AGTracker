@@ -36,6 +36,12 @@
             app:destination="@id/nav_navigation" />
     </fragment>
     <fragment
+        android:id="@+id/nav_list_tracked_places2"
+        android:name="de.js.app.agtracker.ui.ListTrackedPlaces2Fragment"
+        tools:layout="@layout/fragment_list_tracked_places2"
+        android:label="@string/menu_list_tracked_places2">
+    </fragment>
+    <fragment
         android:id="@+id/trackAreaRunningFragment"
         android:name="de.js.app.agtracker.ui.TrackAreaRunningFragment"
         android:label="@string/tracking_running"
