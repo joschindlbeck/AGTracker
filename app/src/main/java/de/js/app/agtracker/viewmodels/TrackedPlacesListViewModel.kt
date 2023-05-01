@@ -7,6 +7,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import de.js.app.agtracker.data.TrackedPlace
 import de.js.app.agtracker.domain.repository.TrackedPlaceRepository
 import javax.inject.Inject
+import javax.inject.Singleton
 
 @HiltViewModel
 class TrackedPlacesListViewModel @Inject internal constructor(

@@ -5,7 +5,9 @@ import android.util.Log
 import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import dagger.hilt.android.AndroidEntryPoint
 import de.js.app.agtracker.R
 import de.js.app.agtracker.adapter.TrackedPlacesListAdapter
@@ -18,19 +20,35 @@ private const val LOG_TAG = "ListTrackedPlaces2"
 class ListTrackedPlaces2Fragment : Fragment() {
 
     private  lateinit var binding: FragmentListTrackedPlaces2Binding
-    private val viewModel: TrackedPlacesListViewModel by viewModels()
+    //private val viewModel: TrackedPlacesListViewModel by viewModels()
+    private val viewModel: TrackedPlacesListViewModel by activityViewModels()
     private lateinit var searchView: SearchView
     private lateinit var adapter: TrackedPlacesListAdapter
+    private lateinit var listFilterViewModel: ListFilterViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        // binding
         binding = FragmentListTrackedPlaces2Binding.inflate(inflater, container, false)
 
+        // Tracked Places Model & adapter
         adapter = TrackedPlacesListAdapter()
         binding.rvTrackedPlacesList.adapter = adapter
         subscribeUi(adapter, binding)
+
+        // Filter Model
+        listFilterViewModel = ViewModelProvider(requireActivity())[ListFilterViewModel::class.java]
+        listFilterViewModel.dateFrom.observe(viewLifecycleOwner) { result ->
+            Log.i(LOG_TAG, "dateFrom: $result")
+        }
+        listFilterViewModel.dateTo.observe(viewLifecycleOwner) { result ->
+            Log.i(LOG_TAG, "dateTo: $result")
+        }
+        listFilterViewModel.name.observe(viewLifecycleOwner) { result ->
+            Log.i(LOG_TAG, "name: $result")
+        }
         return binding.root
     }
 
@@ -89,6 +107,7 @@ class ListTrackedPlaces2Fragment : Fragment() {
             R.id.action_filter -> {
                 //viewModel.toggleFilter()
                 Log.i(LOG_TAG, "Filter clicked")
+                ListFilterFragment().show(parentFragmentManager, "ListFilterFragment")
                 true
             }
 

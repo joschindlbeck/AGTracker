@@ -15,9 +15,11 @@ import android.util.Log
 import android.view.Menu
 import android.view.WindowManager
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
@@ -43,6 +45,7 @@ import de.js.app.agtracker.util.BluetoothUtil
 import de.js.app.agtracker.util.KalmanLatLong
 import de.js.app.agtracker.util.PreferencesUtil
 import de.js.app.agtracker.util.UncaughtExceptionHandler
+import de.js.app.agtracker.viewmodels.TrackedPlacesListViewModel
 
 
 private const val TAG = "MainActivityNav"
@@ -65,6 +68,9 @@ class MainActivityNav : AppCompatActivity() {
     public var mLongitude: Double = 0.0
 
     var mLocationUpdateListeners: ArrayList<LocationUpdateListener> = ArrayList()
+
+    //create view model in activity, can be used in fragments via activityViewModels()
+    private val trackedPlacesListViewModel: TrackedPlacesListViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
