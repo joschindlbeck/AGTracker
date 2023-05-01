@@ -22,9 +22,6 @@
         android:theme="@style/Theme.AGTracker"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".HomeActivity"
-            android:exported="false" />
-        <activity
             android:name=".MainActivityNav"
             android:exported="true"
             android:label="@string/title_activity_main_nav"
