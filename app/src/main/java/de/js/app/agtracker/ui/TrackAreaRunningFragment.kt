@@ -19,12 +19,18 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.Polyline
 import com.google.android.gms.maps.model.PolylineOptions
+import com.google.android.gms.tasks.Tasks.await
+import dagger.hilt.android.AndroidEntryPoint
 import de.js.app.agtracker.MainActivityNav
 import de.js.app.agtracker.R
 import de.js.app.agtracker.databinding.FragmentTrackAreaRunningBinding
+import de.js.app.agtracker.domain.repository.TrackedPlaceRepository
 import de.js.app.agtracker.location.LocationRepository
 import de.js.app.agtracker.models.TrackedPlaceModel
 import de.js.app.agtracker.util.Util
+import kotlinx.coroutines.*
+import java.lang.Thread.sleep
+import javax.inject.Inject
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -35,9 +41,11 @@ private const val ARG_PARAM2 = "param2"
  * Use the [TrackAreaRunningFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
+@AndroidEntryPoint
 class TrackAreaRunningFragment : Fragment(), MainActivityNav.LocationUpdateListener,
     OnMapReadyCallback {
     private var place_id: Long = 0
+    private var place_id2: Long = 0
     private lateinit var mPolylineOptions: PolylineOptions
     private var mLine: Polyline? = null
     private var mStartLocation: Location? = null
@@ -58,12 +66,17 @@ class TrackAreaRunningFragment : Fragment(), MainActivityNav.LocationUpdateListe
     // onDestroyView.
     private val binding get() = _binding!!
 
+    // Field injection?
+    @Inject
+    lateinit var trackedPlaceRepository: TrackedPlaceRepository
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             tracking_id = it.getString(TrackAreaRunningFragment.ARG_TRACKING_ID)
             param2 = it.getString(ARG_PARAM2)
         }
+
 
     }
 
@@ -123,14 +136,15 @@ class TrackAreaRunningFragment : Fragment(), MainActivityNav.LocationUpdateListe
          * @return A new instance of fragment TrackAreaRunningFragment.
          */
         // TODO: Rename and change types and number of parameters
-        @JvmStatic
+        //@JvmStatic
+        /*
         fun newInstance(param1: String, param2: String) =
             TrackAreaRunningFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_TRACKING_ID, param1)
                     putString(ARG_PARAM2, param2)
                 }
-            }
+            } */
     }
 
     override fun onLocationUpdate(location: Location, isGoodQuality: Boolean) {
@@ -215,6 +229,18 @@ class TrackAreaRunningFragment : Fragment(), MainActivityNav.LocationUpdateListe
     private fun addPointsToTrackedPlace(points: List<LatLng>) {
         val mainActivity = activity as MainActivityNav
         mainActivity.dbHandler?.addPointsToTrackedPlace(place_id, points)
+
+        // test
+        if(place_id2 > 0) {
+            val uiScope = CoroutineScope(Dispatchers.Main)
+            uiScope.async(Dispatchers.IO) {
+                trackedPlaceRepository.replacePointsOfTrackedPlace(
+                    place_id2,
+                    points
+                )
+            }
+        }
+
     }
 
     private fun createTrackedPlace(location: Location) {
@@ -232,6 +258,19 @@ class TrackAreaRunningFragment : Fragment(), MainActivityNav.LocationUpdateListe
             ""
         )
         place_id = mainActivity.dbHandler?.addTrackedPlace(trackedPlaceModel) ?: 0
+
+        // test
+        val uiScope = CoroutineScope(Dispatchers.Main)
+        val deferred = uiScope.async(Dispatchers.IO) {
+            val placeid = trackedPlaceRepository.createTrackedPlace(
+                tracking_id ?: "",
+                deviceId = Util.getDeviceID(requireContext()),
+                fieldId = 0
+            )
+            withContext(Dispatchers.Main) {
+                place_id2 = placeid
+            }
+        }
     }
 
     @SuppressLint("MissingPermission")

@@ -32,6 +32,7 @@ import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
+import dagger.hilt.android.AndroidEntryPoint
 import de.js.app.agtracker.database.SpatialiteHandler
 import de.js.app.agtracker.databinding.ActivityMainNavBinding
 import de.js.app.agtracker.location.LocationRepository
@@ -46,6 +47,7 @@ import de.js.app.agtracker.util.UncaughtExceptionHandler
 
 private const val TAG = "MainActivityNav"
 
+@AndroidEntryPoint
 class MainActivityNav : AppCompatActivity() {
     private var mPreferences: SharedPreferences? = null
     private var currentSpeed: Float = 0.0f
