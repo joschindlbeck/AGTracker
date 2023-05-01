@@ -14,6 +14,7 @@ import android.view.animation.Animation
 import android.view.animation.RotateAnimation
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.navArgs
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -58,6 +59,9 @@ class NavigationFragment : Fragment(), MainActivityNav.LocationUpdateListener, O
     private var mPlaceID: Int = 0
     private var mPlaceLatLong: DoubleArray? = null
 
+    //Navigation args
+    private val args: NavigationFragmentArgs by navArgs()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,7 +69,10 @@ class NavigationFragment : Fragment(), MainActivityNav.LocationUpdateListener, O
             mPlaceID = it.getInt(ARG_PLACE_ID)
             mPlaceLatLong = it.getDoubleArray(ARG_PLACE_LATLONG)
         }
-
+        if(args.placeId > 0){
+            mPlaceID = args.placeId.toInt() //TODO: Mist hier!
+            Log.d("NavigationFragment", "PlaceID: $mPlaceID")
+        }
         if (mPlaceID != 0) {
             // place ID is given, read Target from DB
             mPlaceDetails = (activity as MainActivityNav).dbHandler!!.getPlace(mPlaceID)

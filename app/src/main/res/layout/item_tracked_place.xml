@@ -2,8 +2,9 @@
 <layout>
 <data>
     <variable
-        name="trackedPlace"
-        type="de.js.app.agtracker.data.TrackedPlace" />
+        name="viewModel"
+        type="de.js.app.agtracker.data.TrackedPlace"
+        />
 </data>
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
@@ -44,7 +45,7 @@
                 android:id="@+id/tvField"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@{Long.toString(trackedPlace.fieldId)}"
+                android:text="@{Long.toString(viewModel.fieldId)}"
                 tools:text="Field ID" />
 
             <TextView
@@ -52,14 +53,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
-                android:text="@{trackedPlace.name}"
+                android:text="@{viewModel.name}"
                 tools:text="Name" />
 
             <TextView
                 android:id="@+id/tvDate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@{trackedPlace.date}"
+                android:text="@{viewModel.date}"
                 tools:text="Date"/>
         </LinearLayout>
         <LinearLayout
@@ -72,14 +73,14 @@
                 android:id="@+id/tvLat"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text=""
+                android:text="@{Double.toString(viewModel.geomMultiPoint.items[0].y)}"
                 tools:text="Lat" />
 
             <TextView
                 android:id="@+id/tvLong"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text=""
+                android:text="@{Double.toString(viewModel.geomMultiPoint.items[0].x)}"
                 tools:text="Long" />
         </LinearLayout>
 
@@ -95,8 +96,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_baseline_navigation_24"
-                android:background="@drawable/btn_background_round"
-                android:onClick="onMapButtonClicked"/>
+                android:background="@drawable/btn_background_round"/>
         </LinearLayout>
     </LinearLayout>
     </androidx.cardview.widget.CardView>

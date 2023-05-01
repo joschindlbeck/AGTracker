@@ -25,7 +25,11 @@
         android:id="@+id/nav_navigation"
         android:name="de.js.app.agtracker.ui.NavigationFragment"
         android:label="@string/menu_navigate"
-        tools:layout="@layout/fragment_navigation" />
+        tools:layout="@layout/fragment_navigation">
+    <argument
+        android:name="placeId"
+        app:argType="long" />
+    </fragment>
     <fragment
         android:id="@+id/nav_list_tracked_places"
         android:name="de.js.app.agtracker.ui.ListTrackedPlacesFragment"
@@ -40,6 +44,9 @@
         android:name="de.js.app.agtracker.ui.ListTrackedPlaces2Fragment"
         tools:layout="@layout/fragment_list_tracked_places2"
         android:label="@string/menu_list_tracked_places2">
+        <action
+            android:id="@+id/action_nav_tracked_places_to_NaviagtionFragment"
+            app:destination="@id/nav_navigation" />
     </fragment>
     <fragment
         android:id="@+id/trackAreaRunningFragment"
