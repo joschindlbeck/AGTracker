@@ -1,9 +1,8 @@
 package de.js.app.agtracker.ui
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.util.Log
+import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
@@ -11,6 +10,8 @@ import de.js.app.agtracker.R
 import de.js.app.agtracker.adapter.TrackedPlacesListAdapter
 import de.js.app.agtracker.databinding.FragmentListTrackedPlaces2Binding
 import de.js.app.agtracker.viewmodels.TrackedPlacesListViewModel
+
+private const val LOG_TAG = "ListTrackedPlaces2"
 
 @AndroidEntryPoint
 class ListTrackedPlaces2Fragment : Fragment() {
@@ -39,4 +40,26 @@ class ListTrackedPlaces2Fragment : Fragment() {
         }
     }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.list_tracked_places_menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when(item.itemId) {
+            R.id.action_filter -> {
+                //viewModel.toggleFilter()
+                Log.i(LOG_TAG, "Filter clicked")
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+        return true
+
+    }
 }
