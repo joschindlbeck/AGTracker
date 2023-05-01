@@ -13,4 +13,8 @@ class TrackedPlacesListViewModel @Inject internal constructor(
     private val trackedPlaceRepository: TrackedPlaceRepository
 ) : ViewModel(){
     val trackedPlaces: LiveData<List<TrackedPlace>> = trackedPlaceRepository.getTrackedPlaces().asLiveData()
+
+    fun searchForTrackedPlaces(query: String): LiveData<List<TrackedPlace>> {
+        return trackedPlaceRepository.searchTrackedPlaces(query).asLiveData()
+    }
 }

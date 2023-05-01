@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.Flow
 interface TrackedPlaceRepository {
     fun getTrackedPlaces(): Flow<List<TrackedPlace>>
     fun getTrackedPlace(id: Long): TrackedPlace
+    fun searchTrackedPlaces(query: String): Flow<List<TrackedPlace>>
 
     fun insertAll(trackedPlaces: List<TrackedPlace>)
     fun insert(trackedPlace: TrackedPlace): Long

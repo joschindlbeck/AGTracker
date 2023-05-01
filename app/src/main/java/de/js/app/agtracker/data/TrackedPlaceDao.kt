@@ -23,4 +23,7 @@ interface TrackedPlaceDao {
     @Query("SELECT * FROM tracked_places WHERE id = :id")
     fun getTrackedPlace(id: Long): TrackedPlace
 
+    @Query("SELECT * FROM tracked_places WHERE name LIKE '%' || :query || '%'" +
+           "OR date LIKE '%' || :query || '%' ")
+    fun getSearchResults(query: String): Flow<List<TrackedPlace>>
 }

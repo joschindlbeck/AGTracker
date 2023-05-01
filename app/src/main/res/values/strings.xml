@@ -40,4 +40,5 @@
     <string name="settings_gps_source">GPS Source</string>
     <string name="menu_list_tracked_places2">Liste 2</string>
     <string name="filter">Filter</string>
+    <string name="search">Suche</string>
 </resources>

@@ -3,6 +3,7 @@ package de.js.app.agtracker.ui
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
@@ -18,6 +19,8 @@ class ListTrackedPlaces2Fragment : Fragment() {
 
     private  lateinit var binding: FragmentListTrackedPlaces2Binding
     private val viewModel: TrackedPlacesListViewModel by viewModels()
+    private lateinit var searchView: SearchView
+    private lateinit var adapter: TrackedPlacesListAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -25,7 +28,7 @@ class ListTrackedPlaces2Fragment : Fragment() {
     ): View? {
         binding = FragmentListTrackedPlaces2Binding.inflate(inflater, container, false)
 
-        val adapter = TrackedPlacesListAdapter()
+        adapter = TrackedPlacesListAdapter()
         binding.rvTrackedPlacesList.adapter = adapter
         subscribeUi(adapter, binding)
         return binding.root
@@ -42,7 +45,38 @@ class ListTrackedPlaces2Fragment : Fragment() {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.list_tracked_places_menu, menu)
+
+        //add search?
+        val search = menu.findItem(R.id.action_search)
+        searchView = search.actionView as SearchView
+        searchView.isSubmitButtonEnabled = true
+        searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                //Log.i(LOG_TAG, "onQueryTextSubmit: $query")
+                if(query!=null){
+                    getItemsFromDb(query)
+                }
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                //Log.i(LOG_TAG, "onQueryTextChange: $newText")
+                if(newText!=null){
+                    getItemsFromDb(newText)
+                }
+                return true
+            }
+        })
+
+
         super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    private fun getItemsFromDb(query: String) {
+        viewModel.searchForTrackedPlaces(query).observe(viewLifecycleOwner) { result ->
+            //Log.i(LOG_TAG, "searchTrackedPlaces: $result")
+            adapter.submitList(result)
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,6 +91,7 @@ class ListTrackedPlaces2Fragment : Fragment() {
                 Log.i(LOG_TAG, "Filter clicked")
                 true
             }
+
             else -> super.onOptionsItemSelected(item)
         }
         return true

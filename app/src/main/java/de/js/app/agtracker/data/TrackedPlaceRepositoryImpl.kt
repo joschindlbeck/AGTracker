@@ -7,6 +7,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.tasks.Tasks.await
 import de.js.app.agtracker.domain.repository.TrackedPlaceRepository
 import de.js.app.agtracker.util.Util
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -17,6 +18,8 @@ class TrackedPlaceRepositoryImpl @Inject constructor(
 
     override fun getTrackedPlaces() = trackedPlaceDao.getTrackedPlaces()
     override fun getTrackedPlace(id: Long) = trackedPlaceDao.getTrackedPlace(id)
+    override fun searchTrackedPlaces(query: String): Flow<List<TrackedPlace>> = trackedPlaceDao.getSearchResults(query)
+
     override fun insertAll(trackedPlaces: List<TrackedPlace>) =
         trackedPlaceDao.insertAll(trackedPlaces)
 
