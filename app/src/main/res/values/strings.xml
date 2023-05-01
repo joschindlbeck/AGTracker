@@ -15,7 +15,6 @@
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
     <string name="menu_track_point">Punkt aufnehmen</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="menu_track_area">Fläche aufnehmen</string>
     <string name="menu_navigate">Navigation</string>
