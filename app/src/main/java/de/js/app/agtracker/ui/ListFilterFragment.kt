@@ -18,6 +18,7 @@ import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.google.android.material.textfield.TextInputLayout.EndIconMode
 import de.js.app.agtracker.R
+import de.js.app.agtracker.adapter.TrackedPlacesListAdapter
 import de.js.app.agtracker.databinding.FragmentListFilterBinding
 import de.js.app.agtracker.viewmodels.TrackedPlacesListViewModel
 import java.util.*
@@ -25,7 +26,7 @@ import java.util.*
 private const val LOG_TAG = "ListFilterFragment"
 
 
-class ListFilterFragment() : BottomSheetDialogFragment(){
+class ListFilterFragment(private val adapter: TrackedPlacesListAdapter) : BottomSheetDialogFragment() {
 
     private lateinit var binding: FragmentListFilterBinding
     private lateinit var listFilterViewModel: ListFilterViewModel
@@ -45,8 +46,50 @@ class ListFilterFragment() : BottomSheetDialogFragment(){
             listFilterViewModel.dateFrom.value = binding.txtDateFrom.text.toString()
             listFilterViewModel.dateTo.value = binding.txtDateTo.text.toString()
             listFilterViewModel.name.value = binding.txtName.text.toString()
+            doFiltering()
             dismiss()
         }
+        val cal = Calendar.getInstance()
+        val year = cal.get(Calendar.YEAR)
+        val month = cal.get(Calendar.MONTH)
+        val day = cal.get(Calendar.DAY_OF_MONTH)
+        binding.btnThisYear.setOnClickListener {
+            binding.txtDateFrom.setText("$year-01-01")
+            binding.txtDateTo.setText("$year-12-31")
+        }
+        binding.btnLastYear.setOnClickListener() {
+            binding.txtDateFrom.setText("${year - 1}-01-01")
+            binding.txtDateTo.setText("${year - 1}-12-31")
+        }
+    }
+
+    private fun doFiltering() {
+        // null check
+        var dateFrom = listFilterViewModel.dateFrom.value ?: "1900-01-01"
+        var dateTo = listFilterViewModel.dateTo.value ?: "2100-12-31"
+        var name = listFilterViewModel.name.value ?: "%"
+        // empty check
+        if(dateFrom.isEmpty()) dateFrom = "1900-01-01" else dateFrom = "$dateFrom 00:00:00"
+        if(dateTo.isEmpty()) dateTo = "2100-12-31" else dateTo = "$dateTo 23:59:59"
+        if(name.isEmpty()) name = "%"
+
+        Log.i(LOG_TAG, "dateFrom: $dateFrom")
+        Log.i(LOG_TAG, "dateTo: $dateTo")
+        Log.i(LOG_TAG, "name: $name")
+
+
+        placesListViewModel.getTrackedPlacesFiltered(
+            dateFrom,
+            dateTo,
+            name
+        ).observe(viewLifecycleOwner) { result ->
+            Log.i(LOG_TAG, "filteredTrackedPlaces: $result, Size: ${result.size}")
+            Log.i(LOG_TAG, "Size: ${placesListViewModel.trackedPlaces.value?.size}")
+            adapter.submitList(result)
+        }
+
+
+
     }
 
     override fun onCreateView(
@@ -65,7 +108,7 @@ class ListFilterFragment() : BottomSheetDialogFragment(){
         with(binding.txtDateToLayout) {
             endIconMode = TextInputLayout.END_ICON_CUSTOM
             setEndIconDrawable(R.drawable.ic_baseline_calendar_24)
-            setEndIconOnClickListener { showDatePickerDialog(binding.txtDateFrom) }
+            setEndIconOnClickListener { showDatePickerDialog(binding.txtDateTo) }
         }
 
         return binding.root
@@ -75,7 +118,10 @@ class ListFilterFragment() : BottomSheetDialogFragment(){
     private fun showDatePickerDialog(v: View) {
         val datePicker = DatePickerFragment(v as TextInputEditText)
         datePicker.show(parentFragmentManager, "datePicker")
-        Log.d(LOG_TAG, "view model size: ${placesListViewModel.trackedPlaces.value?.size.toString()}")
+        Log.d(
+            LOG_TAG,
+            "view model size: ${placesListViewModel.trackedPlaces.value?.size.toString()}"
+        )
     }
 
     /**
@@ -90,6 +136,7 @@ class ListFilterFragment() : BottomSheetDialogFragment(){
             val day = calendar.get(Calendar.DAY_OF_MONTH)
             return DatePickerDialog(requireContext(), this, year, month, day)
         }
+
         override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
             val monthString = if (month < 10) "0${month + 1}" else "${month + 1}"
             val dayString = if (dayOfMonth < 10) "0${dayOfMonth}" else "$dayOfMonth"

@@ -13,9 +13,14 @@ import javax.inject.Singleton
 class TrackedPlacesListViewModel @Inject internal constructor(
     private val trackedPlaceRepository: TrackedPlaceRepository
 ) : ViewModel(){
-    val trackedPlaces: LiveData<List<TrackedPlace>> = trackedPlaceRepository.getTrackedPlaces().asLiveData()
+    var trackedPlaces: LiveData<List<TrackedPlace>> = trackedPlaceRepository.getTrackedPlaces().asLiveData()
 
     fun searchForTrackedPlaces(query: String): LiveData<List<TrackedPlace>> {
         return trackedPlaceRepository.searchTrackedPlaces(query).asLiveData()
+    }
+
+    fun getTrackedPlacesFiltered(dateFrom: String, dateTo: String, name: String): LiveData<List<TrackedPlace>> {
+        trackedPlaces = trackedPlaceRepository.getTrackedPlacesFiltered(dateFrom, dateTo, name).asLiveData()
+        return trackedPlaces
     }
 }

@@ -54,6 +54,7 @@ class ListTrackedPlaces2Fragment : Fragment() {
 
     private fun subscribeUi(adapter: TrackedPlacesListAdapter, binding: FragmentListTrackedPlaces2Binding) {
         viewModel.trackedPlaces.observe(viewLifecycleOwner) { result ->
+            Log.d(LOG_TAG, "subscribeUi: ${result.size}")
             adapter.submitList(result) {
                 // At this point, the content should be drawn
                 activity?.reportFullyDrawn()
@@ -107,7 +108,7 @@ class ListTrackedPlaces2Fragment : Fragment() {
             R.id.action_filter -> {
                 //viewModel.toggleFilter()
                 Log.i(LOG_TAG, "Filter clicked")
-                ListFilterFragment().show(parentFragmentManager, "ListFilterFragment")
+                ListFilterFragment(adapter).show(parentFragmentManager, "ListFilterFragment")
                 true
             }
 

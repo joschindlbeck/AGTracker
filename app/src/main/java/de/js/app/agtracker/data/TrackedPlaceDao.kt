@@ -17,13 +17,17 @@ interface TrackedPlaceDao {
     @Delete
     fun delete(trackedPlace: TrackedPlace)
 
-    @Query("SELECT * FROM tracked_places")
+    @Query("SELECT * FROM tracked_places ORDER BY date DESC")
     fun getTrackedPlaces(): Flow<List<TrackedPlace>>
+
+    @Query("SELECT * FROM tracked_places WHERE date BETWEEN :dateFrom AND :dateTo" +
+           " and name like '%' || :name || '%' order by date desc")
+    fun getTrackedPlacesFiltered(dateFrom: String, dateTo: String, name: String): Flow<List<TrackedPlace>>
 
     @Query("SELECT * FROM tracked_places WHERE id = :id")
     fun getTrackedPlace(id: Long): TrackedPlace
 
     @Query("SELECT * FROM tracked_places WHERE name LIKE '%' || :query || '%'" +
-           "OR date LIKE '%' || :query || '%' ")
+           "OR date LIKE '%' || :query || '%' ORDER BY date DESC" )
     fun getSearchResults(query: String): Flow<List<TrackedPlace>>
 }

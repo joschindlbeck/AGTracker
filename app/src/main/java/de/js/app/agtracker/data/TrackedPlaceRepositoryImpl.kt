@@ -19,6 +19,11 @@ class TrackedPlaceRepositoryImpl @Inject constructor(
     override fun getTrackedPlaces() = trackedPlaceDao.getTrackedPlaces()
     override fun getTrackedPlace(id: Long) = trackedPlaceDao.getTrackedPlace(id)
     override fun searchTrackedPlaces(query: String): Flow<List<TrackedPlace>> = trackedPlaceDao.getSearchResults(query)
+    override fun getTrackedPlacesFiltered(
+        dateFrom: String,
+        dateTo: String,
+        name: String
+    ): Flow<List<TrackedPlace>> = trackedPlaceDao.getTrackedPlacesFiltered(dateFrom, dateTo, name)
 
     override fun insertAll(trackedPlaces: List<TrackedPlace>) =
         trackedPlaceDao.insertAll(trackedPlaces)
